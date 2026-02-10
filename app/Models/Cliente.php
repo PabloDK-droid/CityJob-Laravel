@@ -6,15 +6,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cliente extends Model
 {
-    protected $table = 'DimensionClientes'; // Tabla personalizada
-    protected $primaryKey = 'id_cliente';    // PK personalizada
+    protected $table = 'DimensionClientes';
+    protected $primaryKey = 'id_cliente';
 
     protected $fillable = [
         'nombres', 'apellido_p', 'apellido_m', 'genero', 'telefono', 
-        'correo_electronico', 'cp', 'domicilio', 'contrasena'
+        'telefono_fijo',
+        'correo_electronico', 'cp', 'domicilio', 'referencias', 'contrasena'
     ];
 
-    protected $hidden = ['contrasena']; // Seguridad para la contraseña
+    protected $hidden = ['contrasena'];
 
     public function contrataciones(): HasMany
     {

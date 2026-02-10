@@ -11,7 +11,7 @@ class UsuariosPruebaSeeder extends Seeder
     {
         // 1. Cliente: Basado en el equipo de "Integradora"
         DB::table('DimensionClientes')->insert([
-            'nombres' => 'Jesús',
+            'nombres' => 'Jesus',
             'apellido_p' => 'Flores',
             'apellido_m' => 'Ambrosio',
             'genero' => 'M',

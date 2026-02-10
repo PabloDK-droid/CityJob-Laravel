@@ -3,11 +3,77 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profesionista;
+use App\Models\Contratacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class ProfesionistaController extends Controller
 {
+    // Dashboard del trabajador
+    public function dashboard()
+    {
+        $profesionista_id = session('user_id');
+        $profesionista = Profesionista::findOrFail($profesionista_id);
+        
+        return view('trabajador.dashboard', compact('profesionista'));
+    }
+
+    // Ver servicios asignados (contrataciones donde el trabajador está involucrado)
+    public function serviciosAsignados()
+    {
+        $profesionista_id = session('user_id');
+        $contrataciones = Contratacion::with(['cliente', 'servicio'])
+            ->where('id_profesionista', $profesionista_id)
+            ->where('estado_emitor', true)
+            ->orderBy('fecha_realizacion', 'desc')
+            ->get();
+        
+        return view('trabajador.servicios_asignados', compact('contrataciones'));
+    }
+
+    // Ver detalle de un servicio asignado
+    public function detalleServicio($id)
+    {
+        $profesionista_id = session('user_id');
+        $contratacion = Contratacion::with(['cliente', 'servicio'])
+            ->where('id_profesionista', $profesionista_id)
+            ->where('id_contratacion', $id)
+            ->firstOrFail();
+        
+        return view('trabajador.detalle_servicio', compact('contratacion'));
+    }
+
+    // Mostrar formulario de edición de perfil
+    public function editarPerfil()
+    {
+        $profesionista_id = session('user_id');
+        $profesionista = Profesionista::findOrFail($profesionista_id);
+        
+        return view('trabajador.editar_perfil', compact('profesionista'));
+    }
+
+    // Actualizar perfil del trabajador
+    public function actualizarPerfil(Request $request)
+    {
+        $profesionista_id = session('user_id');
+        $profesionista = Profesionista::findOrFail($profesionista_id);
+
+        $data = $request->only([
+            'nombres', 'apellido_p', 'apellido_m', 'genero', 
+            'telefono', 'nivel_estudios', 'especializado', 
+            'domicilio', 'cp'
+        ]);
+
+        // Actualizar contraseña si se proporciona
+        if ($request->filled('contrasena')) {
+            $data['contrasena'] = Hash::make($request->contrasena);
+        }
+
+        $profesionista->update($data);
+
+        return redirect()->route('trabajador.dashboard')->with('success', 'Perfil actualizado exitosamente');
+    }
+
     // Listar todos los profesionistas registrados [cite: 147]
     public function index()
     {
@@ -27,10 +93,10 @@ class ProfesionistaController extends Controller
             'correo_electronico' => $request->correo_electronico,
             'nivel_estudios' => $request->nivel_estudios,
             'especializado' => $request->especializado,
-            'calificacion_profesionista' => 0, // Inicia en 0 por defecto [cite: 253]
+            'calificacion_profesionista' => 0,
             'domicilio' => $request->domicilio,
             'cp' => $request->cp,
-            'contrasena' => Hash::make($request->contrasena), // Encriptación de seguridad [cite: 162]
+            'contrasena' => Hash::make($request->contrasena),
         ]);
 
         return response()->json([
