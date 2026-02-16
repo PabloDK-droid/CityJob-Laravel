@@ -21,4 +21,10 @@ class Profesionista extends Model
     {
         return $this->hasMany(Contratacion::class, 'id_profesionista');
     }
+    
+    // AGREGADO: Relación con calificaciones
+    public function calificaciones(): HasMany
+    {
+        return $this->hasMany(Calificacion::class, 'id_profesionista');
+    }
 }

@@ -7,6 +7,8 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ProfesionistaController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EncargadoController;
+use App\Http\Controllers\CalificacionController;
+use App\Http\Controllers\FacturaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,6 +17,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/ayuda', function () { return view('ayuda'); })->name('ayuda');
 
 // Autenticación
 Route::get('/register', function () {
@@ -33,6 +36,10 @@ Route::group(['middleware' => 'role:cliente', 'prefix' => 'cliente', 'as' => 'cl
     Route::get('/mis-contrataciones', [ClienteController::class, 'misContrataciones'])->name('misContrataciones');
     Route::get('/editar-perfil', [ClienteController::class, 'editarPerfil'])->name('editarPerfil');
     Route::post('/actualizar-perfil', [ClienteController::class, 'actualizarPerfil'])->name('actualizarPerfil');
+    //Agregados
+    Route::get('/calificar-servicio/{id}', [CalificacionController::class, 'create'])->name('calificarServicio');
+    Route::post('/calificar-servicio', [CalificacionController::class, 'store'])->name('guardarCalificacion');
+    Route::get('/descargar-factura/{id}', [FacturaController::class, 'descargarPDF'])->name('descargarFactura');
 });
 
 // ===== RUTAS PARA TRABAJADORES/PROFESIONISTAS =====
@@ -42,6 +49,11 @@ Route::group(['middleware' => 'role:trabajador', 'prefix' => 'trabajador', 'as' 
     Route::get('/servicio/{id}', [ProfesionistaController::class, 'detalleServicio'])->name('detalleServicio');
     Route::get('/editar-perfil', [ProfesionistaController::class, 'editarPerfil'])->name('editarPerfil');
     Route::post('/actualizar-perfil', [ProfesionistaController::class, 'actualizarPerfil'])->name('actualizarPerfil');
+    //Agregados
+    Route::post('/completar-servicio/{id}', [ProfesionistaController::class, 'completarServicio'])->name('completarServicio');
+    Route::get('/peticiones-pendientes', [ProfesionistaController::class, 'peticionesPendientes'])->name('peticionesPendientes');
+    Route::post('/aceptar-trabajo/{id}', [ProfesionistaController::class, 'aceptarTrabajo'])->name('aceptarTrabajo');
+    Route::post('/rechazar-trabajo/{id}', [ProfesionistaController::class, 'rechazarTrabajo'])->name('rechazarTrabajo');
 });
 
 // ===== RUTAS PARA ADMINISTRADORES =====

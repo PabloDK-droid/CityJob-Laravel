@@ -10,7 +10,8 @@ class Servicio extends Model
     protected $table = 'DimensionServicios';
     protected $primaryKey = 'id_servicio';
 
-    protected $fillable = ['nombre_servicio'];
+    // AGREGADO: precio_base
+    protected $fillable = ['nombre_servicio', 'precio_base'];
 
     public function contrataciones(): HasMany
     {
