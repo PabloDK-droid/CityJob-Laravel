@@ -18,13 +18,14 @@ class ProfesionistaController extends Controller
         return view('trabajador.dashboard', compact('profesionista'));
     }
 
-    // Ver servicios asignados (contrataciones donde el trabajador está involucrado)
     public function serviciosAsignados()
     {
         $profesionista_id = session('user_id');
         $contrataciones = Contratacion::with(['cliente', 'servicio'])
             ->where('id_profesionista', $profesionista_id)
             ->where('estado_emitor', true)
+            ->where('estado_trabajador', 'aceptado')
+            ->whereIn('estado', ['activo', 'completado'])
             ->orderBy('fecha_realizacion', 'desc')
             ->get();
         
@@ -115,5 +116,70 @@ class ProfesionistaController extends Controller
         }
 
         return response()->json($profesionista);
+    }
+    // Marcar servicio como completado
+    public function completarServicio($id)
+    {
+        $profesionista_id = session('user_id');
+    
+        $contratacion = Contratacion::where('id_contratacion', $id)
+            ->where('id_profesionista', $profesionista_id)
+            ->firstOrFail();
+    
+        // Marcar como completado (NO tocar estado_emitor)
+        $contratacion->estado = 'completado';
+        $contratacion->save();
+    
+        return redirect()->route('trabajador.serviciosAsignados')
+            ->with('success', 'Servicio marcado como completado');
+    }
+
+    // Ver peticiones pendientes de aceptar
+    public function peticionesPendientes()
+    {
+        $profesionista_id = session('user_id');
+        $peticiones = Contratacion::with(['cliente', 'servicio'])
+            ->where('id_profesionista', $profesionista_id)
+            ->where('estado_emitor', true)
+            ->where('estado_trabajador', 'pendiente')
+            ->orderBy('fecha_realizacion', 'desc')
+            ->get();
+        
+        return view('trabajador.peticiones_pendientes', compact('peticiones'));
+    }
+
+    // Aceptar trabajo
+    public function aceptarTrabajo($id)
+    {
+        $profesionista_id = session('user_id');
+    
+        $contratacion = Contratacion::where('id_contratacion', $id)
+            ->where('id_profesionista', $profesionista_id)
+            ->where('estado_trabajador', 'pendiente')
+            ->firstOrFail();
+    
+        $contratacion->estado_trabajador = 'aceptado';
+        $contratacion->save();
+    
+        return redirect()->route('trabajador.peticionesPendientes')
+            ->with('success', '¡Trabajo aceptado! Ahora aparecerá en tus servicios asignados.');
+    }
+
+    // Rechazar trabajo
+    public function rechazarTrabajo($id)
+    {
+        $profesionista_id = session('user_id');
+    
+        $contratacion = Contratacion::where('id_contratacion', $id)
+            ->where('id_profesionista', $profesionista_id)
+            ->where('estado_trabajador', 'pendiente')
+            ->firstOrFail();
+    
+        $contratacion->estado_trabajador = 'rechazado';
+        $contratacion->estado = 'cancelado';
+        $contratacion->save();
+    
+        return redirect()->route('trabajador.peticionesPendientes')
+            ->with('success', 'Trabajo rechazado correctamente.');
     }
 }

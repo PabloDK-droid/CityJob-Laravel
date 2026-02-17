@@ -155,21 +155,29 @@ class AdminController extends Controller
     // Crear nuevo servicio
     public function crearServicio(Request $request)
     {
-        Servicio::create([
-            'nombre_servicio' => $request->nombre_servicio
+        $request->validate([
+            'nombre_servicio' => 'required|string|max:30',
+            'precio_base' => 'required|numeric|min:0'
         ]);
-
+        Servicio::create([
+            'nombre_servicio' => $request->nombre_servicio,
+            'precio_base' => $request->precio_base
+        ]);
         return redirect()->route('admin.servicios')->with('success', 'Servicio creado exitosamente');
     }
 
-    // Actualizar servicio
+    // Actualizar servicio CON PRECIO
     public function actualizarServicio(Request $request, $id)
     {
+        $request->validate([
+            'nombre_servicio' => 'required|string|max:30',
+            'precio_base' => 'required|numeric|min:0'
+        ]);
         $servicio = Servicio::findOrFail($id);
         $servicio->update([
-            'nombre_servicio' => $request->nombre_servicio
+            'nombre_servicio' => $request->nombre_servicio,
+            'precio_base' => $request->precio_base
         ]);
-
         return redirect()->route('admin.servicios')->with('success', 'Servicio actualizado exitosamente');
     }
 
@@ -206,10 +214,55 @@ class AdminController extends Controller
     }
 
     // Función para "Descargar Datos" o reportes
-    public function downloadLogs()
-    {
-        return response()->json(['mensaje' => 'Generando reporte de sistema...']);
-    }
+// Descargar reportes en CSV
+public function downloadLogs()
+{
+    $contrataciones = Contratacion::with(['cliente', 'profesionista', 'servicio'])
+        ->orderBy('fecha_realizacion', 'desc')
+        ->get();
+
+    $filename = 'reporte_contrataciones_' . now()->format('Y-m-d_His') . '.csv';
+
+    $headers = [
+        'Content-Type' => 'text/csv; charset=UTF-8',
+        'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+    ];
+
+    $callback = function() use ($contrataciones) {
+        $file = fopen('php://output', 'w');
+                fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        
+        // Encabezados
+        fputcsv($file, [
+            'ID',
+            'Cliente',
+            'Profesionista',
+            'Servicio',
+            'Monto',
+            'Estado',
+            'Ubicación',
+            'Fecha'
+        ]);
+        
+        // Datos
+        foreach ($contrataciones as $c) {
+            fputcsv($file, [
+                $c->id_contratacion,
+                $c->cliente->nombres . ' ' . $c->cliente->apellido_p,
+                $c->profesionista->nombres . ' ' . $c->profesionista->apellido_p,
+                $c->servicio->nombre_servicio,
+                '$' . number_format($c->monto_acordado, 2),
+                ucfirst($c->estado),
+                $c->localizacion,
+                $c->fecha_realizacion
+            ]);
+        }
+        
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+}
 
     // Registrar trabajadores desde el panel administrativo
     public function registerWorker(Request $request)

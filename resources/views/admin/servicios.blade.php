@@ -18,6 +18,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Nombre del Servicio</th>
+                    <th>Precio Base</th>
                     <th>Total Contrataciones</th>
                     <th>Acciones</th>
                 </tr>
@@ -27,12 +28,14 @@
                     <tr>
                         <td>{{ $servicio->id_servicio }}</td>
                         <td>{{ $servicio->nombre_servicio }}</td>
+                        <td>${{ number_format($servicio->precio_base, 2) }}</td>
                         <td>{{ $servicio->contrataciones_count }}</td>
                         <td>
                             <!-- Formulario para editar -->
                             <form action="{{ route('admin.actualizarServicio', $servicio->id_servicio) }}" method="POST" style="display:inline;">
                                 @csrf
-                                <input type="text" name="nombre_servicio" value="{{ $servicio->nombre_servicio }}" required>
+                                <input type="text" name="nombre_servicio" value="{{ $servicio->nombre_servicio }}" required style="width: 150px;">
+                                <input type="number" name="precio_base" value="{{ $servicio->precio_base }}" required step="0.01" min="0" style="width: 100px;" placeholder="Precio">
                                 <button type="submit">Actualizar</button>
                             </form>
                             
@@ -56,6 +59,12 @@
         @csrf
         <label>Nombre del Servicio:</label>
         <input type="text" name="nombre_servicio" required placeholder="Ej: Plomería, Electricidad, etc.">
+        <br><br>
+        
+        <label>Precio Base (MXN):</label>
+        <input type="number" name="precio_base" required step="0.01" min="0" placeholder="Ej: 500.00">
+        <br><br>
+        
         <button type="submit">Crear Servicio</button>
     </form>
 </div>
