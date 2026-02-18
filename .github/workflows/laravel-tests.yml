@@ -16,7 +16,7 @@ jobs:
         image: postgres:latest
         env:
           POSTGRES_DB: CityJob
-          POSTGRES_PASSWORD: password
+          POSTGRES_PASSWORD: root
         ports:
           - 5432:5432
         options: >-
@@ -31,7 +31,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.4' # Ajusta a tu versión
+        php-version: '8.4'
         extensions: mbstring, dom, curl, libxml, pgsql, pdo_pgsql
 
     - name: Copy .env
@@ -51,7 +51,7 @@ jobs:
         DB_PORT: 5432
         DB_DATABASE: CityJob
         DB_USERNAME: postgres
-        DB_PASSWORD: password
+        DB_PASSWORD: root
 
     - name: Execute tests
       run: php artisan test
@@ -61,4 +61,4 @@ jobs:
         DB_PORT: 5432
         DB_DATABASE: CityJob
         DB_USERNAME: postgres
-        DB_PASSWORD: password
+        DB_PASSWORD: root
