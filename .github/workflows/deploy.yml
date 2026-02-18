@@ -1,0 +1,59 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ pablo, angie, gachuz, jesus, main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: mbstring, dom, fileinfo, pgsql
+
+    - name: Copy .env
+      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+    - name: Install Dependencies
+      run: composer install --no-dev --optimize-autoloader
+
+    - name: Generate app key
+      run: php artisan key:generate
+
+    - name: Clear and cache config
+      run: |
+        php artisan config:cache
+        php artisan route:cache
+        php artisan view:cache
+
+    - name: Create deployment artifact
+      run: |
+        mkdir -p deployment
+        tar -czf deployment/cityjob-${{ github.sha }}.tar.gz \
+          --exclude=node_modules \
+          --exclude=.git \
+          --exclude=tests \
+          --exclude=deployment \
+          --exclude=.env \
+          .
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: cityjob-build
+        path: deployment/cityjob-${{ github.sha }}.tar.gz
+        retention-days: 5
+
+    - name: Deploy notification
+      run: |
+        echo "Deployment artifact created successfully!"
+        echo "Artifact: cityjob-${{ github.sha }}.tar.gz"
+        echo "Date: $(date)"
