@@ -66,12 +66,12 @@ jobs:
     - name: SonarCloud Scan
       uses: SonarSource/sonarqube-scan-action@v5.0.0
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          with:
-          args: >
-            -Dsonar.projectKey="pablodk-droid_CityJob-Laravel"
-            -Dsonar.organization="pablo-sanz" 
-            -Dsonar.sources=app,routes
-            -Dsonar.tests=tests
-            -Dsonar.php.tests.reportPath=tests/results.xml
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        args: >
+          -Dsonar.projectKey=pablodk-droid_CityJob-Laravel
+          -Dsonar.organization=pablo-sanz
+          -Dsonar.sources=app,routes
+          -Dsonar.tests=tests
+          -Dsonar.php.tests.reportPath=tests/results.xml
