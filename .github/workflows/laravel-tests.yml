@@ -71,7 +71,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           with:
           args: >
-            -Dsonar.projectKey=PabloDK-droid_CityJob-Laravel
-            -Dsonar.organization=pablodk-droid
-            -Dsonar.sources=app,routes
-            -Dsonar.tests=tests
+              -Dsonar.projectKey=pablodk-droid_CityJob-Laravel
+              -Dsonar.organization=pablo-sanz
+              -Dsonar.sources=app,routes
+              -Dsonar.tests=tests
