@@ -13,10 +13,11 @@ jobs:
     # Aquí levantamos la base de datos PostgreSQL como un servicio
     services:
       postgres:
-        image: postgres:latest
+        image: postgres:13
         env:
-          POSTGRES_DB: CityJob
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: root
+          POSTGRES_DB: CityJob
         ports:
           - 5432:5432
         options: >-
