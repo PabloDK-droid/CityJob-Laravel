@@ -71,7 +71,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         args: >
-          -Dsonar.projectKey=pablodk-droid_CityJob-Laravel
-          -Dsonar.organization=pablo-sanz
+          -Dsonar.projectKey=PabloDK-droid_CityJob-Laravel
+          -Dsonar.organization=pablodk-droid
           -Dsonar.sources=app,routes
           -Dsonar.tests=tests
+          -Dsonar.branch.name=main
