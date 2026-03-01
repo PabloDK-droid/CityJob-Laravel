@@ -23,7 +23,7 @@
     .hero-content{flex:1;color:rgba(0,0,0,0.85)}
     .hero-title{font-size:44px;font-weight:800;margin-bottom:12px;color:#04142b}
     .hero-text{color:rgba(0,0,0,0.6);line-height:1.6}
-    .cta-row{margin-top:22px;display:flex;gap:12px}
+    .cta-row{margin-top:22px;display:flex;gap:12px;flex-wrap:wrap}
     .btn-primary{background:#041b4a;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:700}
     .btn-secondary{background:transparent;color:#041b4a;padding:12px 18px;border-radius:10px;border:2px solid rgba(255,255,255,0.25);text-decoration:none;font-weight:700}
 
@@ -39,12 +39,13 @@
 <div class="worker-page">
     <aside class="worker-sidebar">
         <div class="brand">CityJob</div>
-            <nav>
-                <a href="{{ route('trabajador.peticionesPendientes') }}">Peticiones</a>
-                <a href="{{ route('trabajador.editarPerfil') }}">Perfil</a>
-                <a href="{{ route('trabajador.serviciosAsignados') }}">Servicios</a>
-                <a href="{{ route('ayuda') }}">Ayuda</a>
-            </nav>
+        <nav>
+            <a href="{{ route('trabajador.peticionesPendientes') }}">Peticiones</a>
+            <a href="{{ route('trabajador.editarPerfil') }}">Perfil</a>
+            <a href="{{ route('trabajador.serviciosAsignados') }}">Servicios</a>
+            <a href="{{ route('trabajador.historial') }}">Historial</a>
+            <a href="{{ route('ayuda') }}">Ayuda</a>
+        </nav>
         <div class="spacer"></div>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none">@csrf</form>
         <a href="#" class="logout-link" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Cerrar sesión</a>
@@ -64,11 +65,12 @@
 
             <div class="hero-content">
                 <div class="hero-title">Hola, {{ $profesionista->nombres }}</div>
-                <div class="hero-text">Panel de control para gestionar tus servicios asignados, actualizar tu perfil y revisar historial de contrataciones. Mantén tu disponibilidad y calificación actualizadas para recibir más solicitudes.</div>
+                <div class="hero-text">Panel de control para gestionar tus servicios asignados, actualizar tu perfil y revisar historial de trabajos realizados. Mantén tu disponibilidad y calificación actualizadas para recibir más solicitudes.</div>
 
                 <div class="cta-row">
-                    <a href="{{ route('trabajador.peticionesPendientes') }}" class="btn-primary">Ver Peticiones Pendientes</a>
+                    <a href="{{ route('trabajador.peticionesPendientes') }}" class="btn-primary">Ver Peticiones</a>
                     <a href="{{ route('trabajador.serviciosAsignados') }}" class="btn-primary">Servicios</a>
+                    <a href="{{ route('trabajador.historial') }}" class="btn-secondary">Mi historial</a>
                     <a href="{{ route('trabajador.editarPerfil') }}" class="btn-secondary">Actualizar perfil</a>
                 </div>
             </div>

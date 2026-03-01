@@ -3,7 +3,7 @@
 @section('content')
 <div>
     <h1>Panel de Ingeniería - Monitoreo de Servicios</h1>
-    
+
     <form action="{{ route('logout') }}" method="POST">
         @csrf
         <button type="submit">Cerrar Sesión</button>
@@ -18,6 +18,7 @@
             <li><a href="{{ route('ingeniero.dashboard') }}">Ver Contrataciones</a></li>
             <li><a href="{{ route('ingeniero.pagos') }}">Estado de Pagos</a></li>
             <li><a href="{{ route('ingeniero.estadisticas') }}">Estadísticas</a></li>
+            <li><a href="{{ route('ingeniero.historial') }}">Historial Global</a></li>
         </ul>
     </nav>
 
@@ -48,8 +49,8 @@
                         <td>{{ $contratacion->fecha_realizacion }}</td>
                         <td>{{ $contratacion->estado_emitor ? 'Activo' : 'Cancelado' }}</td>
                         <td>
-                            <a href="{{ route('ingeniero.detalleContratacion', $contratacion->id_contratacion) }}">Ver Detalles</a>
-                            
+                            <a href="{{ route('ingeniero.historial.detalle', $contratacion->id_contratacion) }}">Ver Detalles</a>
+
                             @if($contratacion->estado_emitor)
                                 <form action="{{ route('ingeniero.cancelar', $contratacion->id_contratacion) }}" method="POST" style="display:inline;">
                                     @csrf
