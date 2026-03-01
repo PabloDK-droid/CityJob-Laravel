@@ -3,7 +3,7 @@
 @section('content')
 <div>
     <h1>Panel de Administración</h1>
-    
+
     <form action="{{ route('logout') }}" method="POST">
         @csrf
         <button type="submit">Cerrar Sesión</button>
@@ -45,7 +45,8 @@
             <li><a href="{{ route('admin.usuarios') }}">Gestionar Usuarios</a></li>
             <li><a href="{{ route('admin.servicios') }}">Gestionar Servicios</a></li>
             <li><a href="{{ route('admin.contrataciones') }}">Ver Contrataciones</a></li>
-            <li><a href="{{ route('admin.downloadLogs') }}">Descargar Reportes</a></li>
+            <li><a href="{{ route('admin.historial') }}">Historial Global</a></li>
+            <li><a href="{{ route('admin.downloadLogs') }}">Descargar Reportes CSV</a></li>
         </ul>
     </nav>
 

@@ -34,22 +34,43 @@
                         <td>{{ $contratacion->cliente->telefono }}</td>
                         <td>{{ $contratacion->localizacion }}</td>
                         <td>{{ \Carbon\Carbon::parse($contratacion->fecha_realizacion)->format('d/m/Y H:i') }}</td>
+
+                        {{-- Badge de estado --}}
                         <td>
-                            @if($contratacion->estado == 'activo')
-                                <span style="color: green;">Activo</span>
+                            @if($contratacion->estado == 'pago_pendiente')
+                                <span style="color:#ff9500;font-weight:600;">Pago pendiente</span>
+                            @elseif($contratacion->estado == 'activo')
+                                <span style="color:green;font-weight:600;">Activo</span>
                             @elseif($contratacion->estado == 'completado')
-                                <span style="color: blue;">Completado</span>
+                                <span style="color:blue;font-weight:600;">Completado</span>
                             @else
-                                <span style="color: red;">Cancelado</span>
+                                <span style="color:red;font-weight:600;">Cancelado</span>
                             @endif
                         </td>
+
+                        {{-- Acciones --}}
                         <td>
-                            <a href="{{ route('trabajador.detalleServicio', $contratacion->id_contratacion) }}">Ver Detalles</a>
-                            
-                            @if($contratacion->estado == 'activo')
-                                <form action="{{ route('trabajador.completarServicio', $contratacion->id_contratacion) }}" method="POST" style="display: inline;">
+                            <a href="{{ route('trabajador.detalleServicio', $contratacion->id_contratacion) }}"
+                               style="font-size:13px;">
+                                Ver Detalles
+                            </a>
+
+                            @if($contratacion->estado == 'pago_pendiente')
+                                <a href="{{ route('trabajador.chat', $contratacion->id_contratacion) }}"
+                                   style="background:#6c5ce7;color:white;padding:6px 12px;border-radius:4px;text-decoration:none;font-size:13px;margin-left:5px;">
+                                    Chat
+                                </a>
+
+                            @elseif($contratacion->estado == 'activo')
+                                <a href="{{ route('trabajador.chat', $contratacion->id_contratacion) }}"
+                                   style="background:#6c5ce7;color:white;padding:6px 12px;border-radius:4px;text-decoration:none;font-size:13px;margin-left:5px;">
+                                    Chat
+                                </a>
+                                <form action="{{ route('trabajador.completarServicio', $contratacion->id_contratacion) }}" method="POST" style="display:inline;">
                                     @csrf
-                                    <button type="submit" onclick="return confirm('¿Marcar este servicio como completado?')">
+                                    <button type="submit"
+                                            onclick="return confirm('¿Marcar este servicio como completado?')"
+                                            style="margin-left:5px;font-size:13px;">
                                         Completar
                                     </button>
                                 </form>

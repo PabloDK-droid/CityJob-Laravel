@@ -39,12 +39,13 @@
 <div class="client-page">
     <aside class="client-sidebar">
         <div class="brand">CityJob</div>
-            <nav>
-                <a href="{{ route('cliente.editarPerfil') }}">Perfil</a>
-                <a href="{{ route('cliente.catalogo') }}">Catálogo</a>
-                <a href="{{ route('cliente.misContrataciones') }}">Contrataciones</a>
-                <a href="{{ route('ayuda') }}">Ayuda</a>
-            </nav>
+        <nav>
+            <a href="{{ route('cliente.editarPerfil') }}">Perfil</a>
+            <a href="{{ route('cliente.catalogo') }}">Catálogo</a>
+            <a href="{{ route('cliente.misContrataciones') }}">Contrataciones</a>
+            <a href="{{ route('cliente.historial') }}">Historial</a>
+            <a href="{{ route('ayuda') }}">Ayuda</a>
+        </nav>
         <div class="spacer"></div>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none">@csrf</form>
         <a href="#" class="logout-link" onclick="event.preventDefault();document.getElementById('logout-form').submit();">Cerrar sesión</a>
@@ -63,13 +64,14 @@
             </div>
 
             <div class="hero-content">
-                <div class="hero-title">Bienvenido a {{ isset($cliente) ? ($cliente->nombres ?? '(Usuario)') : (Auth::user()->nombres ?? Auth::user()->name ?? '(Usuario)') }}</div>
+                <div class="hero-title">Bienvenido, {{ isset($cliente) ? ($cliente->nombres ?? '(Usuario)') : (Auth::user()->nombres ?? Auth::user()->name ?? '(Usuario)') }}</div>
                 <div class="hero-text">Estarás usando una página donde podrás contratar servicios para hogar o empresariales dependiendo de tus necesidades. Explora el catálogo y comienza a solicitar presupuestos o contratar profesionales certificados.</div>
 
-            <div class="cta-row">
-                <a href="{{ route('cliente.catalogo') }}" class="btn-primary">Explorar catálogo</a>
-                <a href="{{ route('cliente.misContrataciones') }}" class="btn-secondary">Mis contrataciones</a>
-            </div>
+                <div class="cta-row">
+                    <a href="{{ route('cliente.catalogo') }}" class="btn-primary">Explorar catálogo</a>
+                    <a href="{{ route('cliente.misContrataciones') }}" class="btn-secondary">Mis contrataciones</a>
+                    <a href="{{ route('cliente.historial') }}" class="btn-secondary">Mi historial</a>
+                </div>
             </div>
         </div>
     </section>
