@@ -1,474 +1,607 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrarse - CityJob</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CityJob — Crear Cuenta</title>
+
+    <link rel="icon" type="image/png" href="/img/CityJib_2.png">
+    <link rel="shortcut icon" href="/img/CityJib_2.png">
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.bunny.net/css?family=syne:400,600,700,800|instrument-sans:400,500,600" rel="stylesheet"/>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --cyan:       #00C3FF;
+            --cyan-dim:   #0094cc;
+            --navy:       #00152B;
+            --navy-mid:   #002647;
+            --navy-light: #003B73;
+            --text-muted: #8BAAC8;
+            --border:     rgba(0,195,255,0.15);
+            --white:      #FFFFFF;
         }
+
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
         body {
             font-family: 'Instrument Sans', sans-serif;
-            background: linear-gradient(135deg, #0066ff 0%, #00a8ff 100%);
+            background: var(--navy);
+            color: var(--white);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
         }
 
-        .header {
+        body::before {
+            content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: .5;
+        }
+
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(110px);
+            pointer-events: none;
+            opacity: .2;
+            z-index: 0;
+        }
+        .blob-1 { width:500px; height:500px; background:var(--cyan);  top:-160px; right:-160px; }
+        .blob-2 { width:380px; height:380px; background:#0055aa;       bottom:-120px; left:-100px; }
+
+        .dot-grid {
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle at 2px 2px, rgba(0,195,255,.06) 1.5px, transparent 0);
+            background-size: 36px 36px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── HEADER ─── */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 1.25rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            background: rgba(0,21,43,0.6);
+            backdrop-filter: blur(12px);
         }
 
-        .header .back-btn {
-            color: #fff;
-            text-decoration: none;
-            font-size: 24px;
-            font-weight: 600;
-            background: linear-gradient(135deg, #0066ff 0%, #00a8ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .logo-link {
             display: flex;
             align-items: center;
-            gap: 10px;
-            transition: transform 0.3s ease;
+            gap: .65rem;
+            text-decoration: none;
+        }
+        .logo-link img {
+            height: 36px; width: 36px;
+            object-fit: contain;
+            border-radius: 8px;
+            filter: drop-shadow(0 0 6px rgba(0,195,255,.5));
+        }
+        .logo-link span {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -1px;
+        }
+        .logo-link span em { font-style:normal; color:var(--cyan); }
+
+        .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: .88rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            transition: color .2s;
+        }
+        .back-link:hover { color: var(--cyan); }
+
+        /* ─── MAIN ─── */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2.5rem 1.5rem 3rem;
+            position: relative;
+            z-index: 10;
         }
 
-        .header .back-btn:hover {
-            transform: translateX(-5px);
-        }
-
-        .header .logo {
-            color: #fff;
-            font-size: 24px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #0066ff 0%, #00a8ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .register-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+        .register-card {
+            width: 100%;
+            max-width: 580px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
             border-radius: 1.5rem;
-            box-shadow: 0 0.2px 60px rgba(0, 0, 0, 0.15);
-            padding: 40px;
-            width: 100%;
-            max-width: 550px;
-            margin-top: 80px;
-            margin-bottom: 40px;
+            padding: 2.5rem 2.5rem;
+            backdrop-filter: blur(16px);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp .55s ease both;
         }
 
-        .register-container h2 {
-            color: #333;
-            font-size: 28px;
+        .register-card::before {
+            content: '';
+            position: absolute;
+            top: -60px; left: 50%;
+            transform: translateX(-50%);
+            width: 260px; height: 260px;
+            background: var(--cyan);
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: .07;
+            pointer-events: none;
+        }
+
+        @keyframes slideUp {
+            from { opacity:0; transform:translateY(24px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .card-header img {
+            width: 44px; height: 44px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(0,195,255,.5));
+        }
+        .card-header div h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -.5px;
+        }
+        .card-header div p {
+            color: var(--text-muted);
+            font-size: .85rem;
+            margin-top: .15rem;
+        }
+
+        /* alerts */
+        .alert {
+            padding: .75rem 1rem;
+            border-radius: .65rem;
+            font-size: .88rem;
+            margin-bottom: 1.25rem;
+        }
+        .alert-error {
+            background: rgba(220,53,69,.12);
+            border: 1px solid rgba(220,53,69,.3);
+            color: #ff6b7a;
+        }
+        .alert-error ul { padding-left: 1.25rem; }
+        .alert-success {
+            background: rgba(0,195,255,.1);
+            border: 1px solid rgba(0,195,255,.25);
+            color: var(--cyan);
+        }
+
+        /* role tabs */
+        .role-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .75rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .role-tab {
+            padding: .9rem 1rem;
+            border-radius: .75rem;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,.03);
+            cursor: pointer;
+            transition: all .2s;
+            text-align: center;
+            position: relative;
+        }
+        .role-tab input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0; height: 0;
+        }
+        .role-tab .tab-icon { font-size: 1.5rem; display: block; margin-bottom: .3rem; }
+        .role-tab .tab-label {
+            font-family: 'Syne', sans-serif;
             font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .register-container p {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
+            font-size: .9rem;
             display: block;
-            color: #333;
-            font-weight: 500;
-            margin-bottom: 8px;
-            font-size: 14px;
+        }
+        .role-tab .tab-sub {
+            font-size: .75rem;
+            color: var(--text-muted);
+            display: block;
+            margin-top: .2rem;
         }
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 0.75rem;
-            font-family: 'Instrument Sans', sans-serif;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            background: #f9fafb;
+        .role-tab:hover {
+            border-color: rgba(0,195,255,.35);
+            background: rgba(0,195,255,.05);
+        }
+        .role-tab.selected {
+            border-color: var(--cyan);
+            background: rgba(0,195,255,.1);
+            box-shadow: 0 0 0 1px rgba(0,195,255,.2);
+        }
+        .role-tab.selected .tab-label { color: var(--cyan); }
+
+        /* section label */
+        .section-sep {
+            font-size: .72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: rgba(139,170,200,.5);
+            margin: 1.5rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+        .section-sep::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
         }
 
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            background: #fff;
-            border-color: #0066ff;
-            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
-        }
-
+        /* form grid */
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .form-group { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1rem; }
+        .form-group:last-child { margin-bottom: 0; }
+
+        label {
+            font-weight: 600;
+            font-size: .82rem;
+            color: #a8c5e0;
+            letter-spacing: .3px;
         }
 
-        .form-row .form-group {
-            margin-bottom: 0;
-        }
-
-        @media (max-width: 600px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .password-wrapper {
-            position: relative;
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 5px;
-            transition: transform 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-        }
-
-        .password-toggle:hover {
-            transform: translateY(-50%) scale(1.1);
-            color: #0066ff;
-        }
-
-        .conditional-fields {
-            display: none;
-            padding: 15px;
-            background: rgba(0, 102, 255, 0.05);
-            border-radius: 0.75rem;
-            margin: 20px 0;
-            border-left: 4px solid #0066ff;
-        }
-
-        .conditional-fields.active {
-            display: block;
-        }
-
-        .error-message {
-            color: #dc3545;
-            font-size: 13px;
-            margin-top: 5px;
-        }
-
-        .alert {
-            padding: 12px 15px;
-            border-radius: 0.75rem;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        .alert-danger {
-            background: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
-            border: 1px solid rgba(220, 53, 69, 0.2);
-        }
-
-        .alert-danger ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-
-        .alert-success {
-            background: rgba(0, 255, 136, 0.1);
-            color: #00ff88;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-        }
-
-        .button-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 30px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 0.75rem;
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: .72rem 1rem;
+            background: rgba(255,255,255,.06);
+            border: 1px solid var(--border);
+            border-radius: .65rem;
+            color: var(--white);
             font-family: 'Instrument Sans', sans-serif;
-            font-weight: 600;
-            font-size: 14px;
+            font-size: .92rem;
+            transition: border-color .2s, box-shadow .2s, background .2s;
+            outline: none;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--cyan);
+            background: rgba(0,195,255,.06);
+            box-shadow: 0 0 0 3px rgba(0,195,255,.12);
+        }
+        input::placeholder, textarea::placeholder { color: rgba(139,170,200,.4); }
+        select option { background: var(--navy-mid); color: var(--white); }
+        textarea { resize: vertical; min-height: 72px; }
+
+        /* password wrap */
+        .pw-wrap { position: relative; }
+        .pw-wrap input { padding-right: 2.75rem; }
+        .pw-toggle {
+            position: absolute;
+            right: 10px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            text-align: center;
+            color: var(--text-muted);
+            padding: 4px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            transition: color .2s;
+        }
+        .pw-toggle:hover { color: var(--cyan); }
+
+        /* conditional */
+        .conditional { display: none; }
+        .conditional.active { display: block; }
+
+        .cond-box {
+            background: rgba(0,195,255,.05);
+            border: 1px solid rgba(0,195,255,.15);
+            border-left: 3px solid var(--cyan);
+            border-radius: .75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
         }
 
+        /* submit */
         .btn-submit {
-            background: linear-gradient(135deg, #0066ff 0%, #00a8ff 100%);
-            color: #fff;
+            width: 100%;
+            padding: .9rem;
+            background: var(--cyan);
+            color: var(--navy);
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: .75rem;
+            cursor: pointer;
+            transition: all .25s ease;
+            box-shadow: 0 4px 20px rgba(0,195,255,.3);
+            margin-top: 1.75rem;
+            letter-spacing: .3px;
         }
-
         .btn-submit:hover {
+            background: var(--cyan-dim);
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
+            box-shadow: 0 8px 28px rgba(0,195,255,.4);
         }
 
-        .btn-cancel {
-            background: transparent;
-            color: #0066ff;
-            border: 2px solid #0066ff;
-        }
-
-        .btn-cancel:hover {
-            background: rgba(0, 102, 255, 0.05);
-            transform: translateY(-2px);
-        }
-
-        .form-footer {
+        .login-row {
             text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #666;
+            font-size: .88rem;
+            color: var(--text-muted);
+            margin-top: 1.25rem;
         }
-
-        .form-footer a {
-            color: #0066ff;
+        .login-row a {
+            color: var(--cyan);
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s ease;
+        }
+        .login-row a:hover { opacity: .8; }
+
+        footer {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 1.25rem;
+            color: rgba(139,170,200,.4);
+            font-size: .78rem;
+            border-top: 1px solid var(--border);
         }
 
-        .form-footer a:hover {
-            color: #00a8ff;
-        }
-
-        @media (max-width: 768px) {
-            .register-container {
-                padding: 30px 20px;
-                margin-top: 100px;
-            }
-
-            .register-container h2 {
-                font-size: 24px;
-            }
-
-            .header {
-                padding: 12px 20px;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
+        @media (max-width: 560px) {
+            .form-row { grid-template-columns: 1fr; }
+            .register-card { padding: 1.75rem 1.25rem; }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <a href="{{ url('/') }}" class="back-btn">← Volver</a>
-        <div class="logo">CityJob</div>
-    </div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="dot-grid"></div>
 
-    <div class="register-container">
-        <h2>Crear Cuenta</h2>
-        <p>Únete a CityJob y comienza hoy</p>
+    <header>
+        <a href="{{ url('/') }}" class="logo-link">
+            <img src="/img/CityJib_2.png" alt="CityJob">
+            <span>City<em>Job</em></span>
+        </a>
+        <a href="{{ url('/') }}" class="back-link">← Regresar</a>
+    </header>
 
-        @if($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+    <main>
+        <div class="register-card">
 
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <form method="POST" action="/register">
-            @csrf
-
-            <div class="form-group">
-                <label for="rol">Tipo de Usuario</label>
-                <select id="rol" name="rol" onchange="toggleFormFields()" required>
-                    <option value="">Selecciona tu rol...</option>
-                    <option value="cliente">Quiero contratar servicios</option>
-                    <option value="trabajador">Quiero ofrecer mis servicios</option>
-                </select>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="nombres">Nombre(s)</label>
-                    <input id="nombres" type="text" name="nombres" required autofocus placeholder="Tu nombre">
-                </div>
-                <div class="form-group">
-                    <label for="apellido_p">Apellido Paterno</label>
-                    <input id="apellido_p" type="text" name="apellido_p" required placeholder="Tu apellido">
+            <div class="card-header">
+                <img src="/img/CityJib_2.png" alt="CityJob">
+                <div>
+                    <h1>Crear cuenta</h1>
+                    <p>Únete a CityJob y comienza hoy</p>
                 </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="apellido_m">Apellido Materno</label>
-                    <input id="apellido_m" type="text" name="apellido_m" placeholder="Tu apellido materno">
+            @if($errors->any())
+                <div class="alert alert-error">
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
-                <div class="form-group">
-                    <label for="genero">Género</label>
-                    <select id="genero" name="genero" required>
-                        <option value="">Selecciona...</option>
-                        <option value="M">Masculino</option>
-                        <option value="F">Femenino</option>
-                    </select>
-                </div>
-            </div>
+            @endif
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="telefono">Teléfono</label>
-                    <input id="telefono" type="tel" name="telefono" required placeholder="10 dígitos">
-                </div>
-                <div class="form-group">
-                    <label for="telefono_fijo">Teléfono Fijo (opcional)</label>
-                    <input id="telefono_fijo" type="tel" name="telefono_fijo" placeholder="10 dígitos">
-                </div>
-            </div>
+            @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
 
-            <div class="form-group">
-                <label for="correo_electronico">Correo Electrónico</label>
-                <input id="correo_electronico" type="email" name="correo_electronico" required placeholder="tu@correo.com">
-            </div>
+            <form method="POST" action="{{ route('register.post') }}">
+                @csrf
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="cp">Código Postal</label>
-                    <input id="cp" type="number" name="cp" required placeholder="Tu código postal">
+                {{-- ROLE TABS --}}
+                <p class="section-sep">Tipo de cuenta</p>
+                <div class="role-tabs">
+                    <label class="role-tab {{ old('rol') === 'cliente' ? 'selected' : '' }}" id="tab-cliente">
+                        <input type="radio" name="rol" value="cliente"
+                               {{ old('rol') === 'cliente' ? 'checked' : '' }}
+                               onchange="handleRole(this)">
+                        <span class="tab-icon">🏠</span>
+                        <span class="tab-label">Cliente</span>
+                        <span class="tab-sub">Quiero contratar servicios</span>
+                    </label>
+                    <label class="role-tab {{ old('rol') === 'trabajador' ? 'selected' : '' }}" id="tab-trabajador">
+                        <input type="radio" name="rol" value="trabajador"
+                               {{ old('rol') === 'trabajador' ? 'checked' : '' }}
+                               onchange="handleRole(this)">
+                        <span class="tab-icon">🔧</span>
+                        <span class="tab-label">Profesionista</span>
+                        <span class="tab-sub">Quiero ofrecer mis servicios</span>
+                    </label>
                 </div>
-                <div class="form-group">
-                    <label for="domicilio">Domicilio</label>
-                    <input id="domicilio" type="text" name="domicilio" required placeholder="Calle y número">
-                </div>
-            </div>
 
-            <!-- Campos específicos para CLIENTE -->
-            <div id="campos_cliente" class="conditional-fields">
-                <div class="form-group">
-                    <label for="referencias">Referencias de Ubicación</label>
-                    <textarea id="referencias" name="referencias" rows="3" placeholder="Ej: Cerca de la estación, entre dos avenidas..."></textarea>
-                </div>
-            </div>
+                {{-- DATOS PERSONALES --}}
+                <p class="section-sep">Datos personales</p>
 
-            <!-- Campos específicos para TRABAJADOR -->
-            <div id="campos_trabajador" class="conditional-fields">
-                <div class="form-group">
-                    <label for="nivel_estudios">Nivel de Estudios</label>
-                    <input id="nivel_estudios" type="text" name="nivel_estudios" placeholder="Ej: Licenciatura, Técnico...">
-                </div>
-                <div class="form-group">
-                    <label for="especializado">Especialidad</label>
-                    <input id="especializado" type="text" name="especializado" placeholder="Ej: Plomería, Electricidad...">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="contrasena">Contraseña</label>
-                    <div class="password-wrapper">
-                        <input id="contrasena" type="password" name="contrasena" required minlength="6" placeholder="Mínimo 6 caracteres">
-                        <button type="button" class="password-toggle" onclick="togglePassword('contrasena')">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre(s)</label>
+                        <input type="text" name="nombres" value="{{ old('nombres') }}" required placeholder="Tu nombre" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellido Paterno</label>
+                        <input type="text" name="apellido_p" value="{{ old('apellido_p') }}" required placeholder="Apellido">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="contrasena_confirmacion">Confirmar Contraseña</label>
-                    <div class="password-wrapper">
-                        <input id="contrasena_confirmacion" type="password" name="contrasena_confirmacion" required minlength="6" placeholder="Repite tu contraseña">
-                        <button type="button" class="password-toggle" onclick="togglePassword('contrasena_confirmacion')">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Apellido Materno <span style="color:var(--text-muted);font-weight:400;">(opcional)</span></label>
+                        <input type="text" name="apellido_m" value="{{ old('apellido_m') }}" placeholder="Apellido materno">
+                    </div>
+                    <div class="form-group">
+                        <label>Género</label>
+                        <select name="genero" required>
+                            <option value="">Selecciona...</option>
+                            <option value="M" {{ old('genero') === 'M' ? 'selected' : '' }}>Masculino</option>
+                            <option value="F" {{ old('genero') === 'F' ? 'selected' : '' }}>Femenino</option>
+                        </select>
                     </div>
                 </div>
-            </div>
 
-            <div class="button-group">
-                <button type="submit" class="btn btn-submit">Registrarse</button>
-                <a href="{{ url('/') }}" class="btn btn-cancel">Cancelar</a>
-            </div>
+                {{-- CONTACTO --}}
+                <p class="section-sep">Contacto</p>
 
-            <div class="form-footer">
-                ¿Ya tienes cuenta? <a href="{{ route('login') }}">Inicia sesión aquí</a>
-            </div>
-        </form>
-    </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" name="telefono" value="{{ old('telefono') }}" required placeholder="10 dígitos">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono Fijo <span style="color:var(--text-muted);font-weight:400;">(opcional)</span></label>
+                        <input type="tel" name="telefono_fijo" value="{{ old('telefono_fijo') }}" placeholder="10 dígitos">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" name="correo_electronico" value="{{ old('correo_electronico') }}" required placeholder="tu@correo.com">
+                </div>
+
+                {{-- DOMICILIO --}}
+                <p class="section-sep">Domicilio</p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Código Postal</label>
+                        <input type="number" name="cp" value="{{ old('cp') }}" required placeholder="CP">
+                    </div>
+                    <div class="form-group">
+                        <label>Domicilio</label>
+                        <input type="text" name="domicilio" value="{{ old('domicilio') }}" required placeholder="Calle y número">
+                    </div>
+                </div>
+
+                {{-- CLIENTE --}}
+                <div id="campos_cliente" class="conditional {{ old('rol') === 'cliente' ? 'active' : '' }}">
+                    <div class="cond-box">
+                        <div class="form-group" style="margin-bottom:0">
+                            <label>Referencias de Ubicación</label>
+                            <textarea name="referencias" placeholder="Ej: Cerca de la estación, entre dos avenidas...">{{ old('referencias') }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- TRABAJADOR --}}
+                <div id="campos_trabajador" class="conditional {{ old('rol') === 'trabajador' ? 'active' : '' }}">
+                    <div class="cond-box">
+                        <p class="section-sep" style="margin-top:0">Datos profesionales</p>
+                        <div class="form-row">
+                            <div class="form-group" style="margin-bottom:0">
+                                <label>Nivel de Estudios</label>
+                                <input type="text" name="nivel_estudios" value="{{ old('nivel_estudios') }}" id="nivel_estudios" placeholder="Ej: Licenciatura, Técnico...">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0">
+                                <label>Especialidad</label>
+                                <input type="text" name="especializado" value="{{ old('especializado') }}" id="especializado" placeholder="Ej: Plomería, Electricidad...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- CONTRASEÑA --}}
+                <p class="section-sep">Seguridad</p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <div class="pw-wrap">
+                            <input type="password" name="contrasena" id="pw1" required minlength="6" placeholder="Mínimo 6 caracteres">
+                            <button type="button" class="pw-toggle" onclick="togglePw('pw1', this)">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirmar Contraseña</label>
+                        <div class="pw-wrap">
+                            <input type="password" name="contrasena_confirmacion" id="pw2" required minlength="6" placeholder="Repite tu contraseña">
+                            <button type="button" class="pw-toggle" onclick="togglePw('pw2', this)">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Crear mi cuenta</button>
+
+                <div class="login-row">
+                    ¿Ya tienes cuenta? <a href="{{ route('login') }}">Inicia sesión aquí</a>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <footer>&copy; 2026 CityJob. Todos los derechos reservados.</footer>
 
     <script>
-        function togglePassword(fieldId) {
-            const field = document.getElementById(fieldId);
-            field.type = field.type === 'password' ? 'text' : 'password';
+        function handleRole(radio) {
+            document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('selected'));
+            radio.closest('.role-tab').classList.add('selected');
+
+            const isWorker = radio.value === 'trabajador';
+            document.getElementById('campos_cliente').classList.toggle('active', radio.value === 'cliente');
+            document.getElementById('campos_trabajador').classList.toggle('active', isWorker);
+
+            const niv = document.getElementById('nivel_estudios');
+            const esp = document.getElementById('especializado');
+            if (isWorker) {
+                niv.setAttribute('required', '');
+                esp.setAttribute('required', '');
+            } else {
+                niv.removeAttribute('required');
+                esp.removeAttribute('required');
+            }
         }
 
-        function toggleFormFields() {
-            const rol = document.getElementById('rol').value;
-            const camposCliente = document.getElementById('campos_cliente');
-            const camposTrabajador = document.getElementById('campos_trabajador');
-            const nivelEstudios = document.getElementById('nivel_estudios');
-            const especializado = document.getElementById('especializado');
-
-            if (rol === 'cliente') {
-                camposCliente.classList.add('active');
-                camposTrabajador.classList.remove('active');
-                nivelEstudios.removeAttribute('required');
-                especializado.removeAttribute('required');
-            } else if (rol === 'trabajador') {
-                camposCliente.classList.remove('active');
-                camposTrabajador.classList.add('active');
-                nivelEstudios.setAttribute('required', 'required');
-                especializado.setAttribute('required', 'required');
-            } else {
-                camposCliente.classList.remove('active');
-                camposTrabajador.classList.remove('active');
-            }
+        function togglePw(id, btn) {
+            const field = document.getElementById(id);
+            field.type = field.type === 'password' ? 'text' : 'password';
         }
     </script>
 </body>
