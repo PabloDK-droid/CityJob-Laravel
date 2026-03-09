@@ -602,7 +602,6 @@
         <span>&copy; 2026 CityJob. Todos los derechos reservados.</span>
         <div style="display:flex;gap:1.5rem;">
             <a href="{{ route('ayuda') }}">Centro de ayuda</a>
-            <a href="{{ route('login') }}">Iniciar sesión</a>
         </div>
     </footer>
 
