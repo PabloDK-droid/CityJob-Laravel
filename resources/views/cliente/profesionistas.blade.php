@@ -86,8 +86,11 @@
     /* form contratar inline */
     .contratar-form { border-top:1px solid var(--border); padding-top:1rem; display:flex; flex-direction:column; gap:.6rem; }
     .contratar-label { font-size:.82rem; font-weight:600; color:#a8c5e0; }
+
+    /* geo input wrapper */
+    .geo-wrap { position:relative; }
     .contratar-input {
-        width:100%; padding:.65rem .9rem;
+        width:100%; padding:.65rem 2.4rem .65rem .9rem;
         background:rgba(255,255,255,.06); border:1px solid var(--border);
         border-radius:.6rem; color:var(--white);
         font-family:'Instrument Sans',sans-serif; font-size:.88rem;
@@ -95,8 +98,42 @@
     }
     .contratar-input:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(0,195,255,.1); }
     .contratar-input::placeholder { color:rgba(139,170,200,.4); }
+
+    /* botón GPS dentro del input */
+    .btn-gps {
+        position:absolute; right:.5rem; top:50%; transform:translateY(-50%);
+        background:none; border:none; cursor:pointer; padding:.2rem;
+        color:var(--text-muted); transition:color .2s; display:flex; align-items:center;
+    }
+    .btn-gps:hover { color:var(--cyan); }
+    .btn-gps.loading { animation:spin .8s linear infinite; color:var(--cyan); }
+    @keyframes spin { to { transform:translateY(-50%) rotate(360deg); } }
+
+    /* dropdown autocomplete */
+    .geo-suggestions {
+        position:absolute; top:calc(100% + 4px); left:0; right:0; z-index:999;
+        background:#002647; border:1px solid var(--border);
+        border-radius:.65rem; overflow:hidden;
+        box-shadow:0 8px 24px rgba(0,0,0,.35);
+        display:none;
+    }
+    .geo-suggestions.open { display:block; }
+    .geo-suggestion {
+        display:flex; align-items:center; gap:.6rem;
+        padding:.65rem .9rem; cursor:pointer;
+        font-size:.83rem; color:var(--white);
+        transition:background .15s; border-bottom:1px solid rgba(0,195,255,.07);
+    }
+    .geo-suggestion:last-child { border-bottom:none; }
+    .geo-suggestion:hover { background:rgba(0,195,255,.08); color:var(--cyan); }
+    .geo-suggestion svg { flex-shrink:0; color:var(--text-muted); }
+    .geo-msg { font-size:.75rem; color:var(--text-muted); display:flex; align-items:center; gap:.35rem; min-height:16px; }
+    .geo-msg.error { color:#ff6b7a; }
+    .geo-msg.ok    { color:#00d68f; }
+
     .btn-contratar { background:var(--cyan); color:var(--navy); padding:.65rem; border:none; border-radius:.6rem; font-weight:700; font-size:.88rem; cursor:pointer; transition:all .2s; font-family:'Syne',sans-serif; width:100%; }
     .btn-contratar:hover { background:var(--cyan-dim); transform:translateY(-1px); }
+    .btn-contratar:disabled { opacity:.5; cursor:not-allowed; transform:none; }
 
     .empty-state { text-align:center; padding:4rem 2rem; color:var(--text-muted); }
     .empty-state svg { color:rgba(0,195,255,.25); margin-bottom:1rem; }
@@ -213,8 +250,27 @@
                             @csrf
                             <input type="hidden" name="id_profesionista" value="{{ $profesionista->id_profesionista }}">
                             <input type="hidden" name="id_servicio" value="{{ $servicio->id_servicio }}">
+
                             <label class="contratar-label">Ubicación del servicio</label>
-                            <input type="text" name="localizacion" required placeholder="Ej: Calle 5 #123, Col. Centro" class="contratar-input">
+
+                            <div class="geo-wrap" id="geoWrap{{ $profesionista->id_profesionista }}">
+                                <input
+                                    type="text"
+                                    name="localizacion"
+                                    required
+                                    placeholder="Escribe o usa tu ubicación actual..."
+                                    class="contratar-input geo-input"
+                                    autocomplete="off"
+                                    data-id="{{ $profesionista->id_profesionista }}"
+                                >
+                                <button type="button" class="btn-gps" title="Usar mi ubicación GPS"
+                                    onclick="usarGPS(this, {{ $profesionista->id_profesionista }})">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="9" stroke-dasharray="2 2"/></svg>
+                                </button>
+                                <div class="geo-suggestions" id="sugg{{ $profesionista->id_profesionista }}"></div>
+                            </div>
+                            <div class="geo-msg" id="geoMsg{{ $profesionista->id_profesionista }}"></div>
+
                             <button type="submit" class="btn-contratar">Contratar ahora</button>
                         </form>
                     </div>
@@ -228,4 +284,116 @@
         @endif
     </main>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+// ── NOMINATIM AUTOCOMPLETE + GPS ──────────────────────────────────────
+const NOMINATIM = 'https://nominatim.openstreetmap.org';
+let debounceTimers = {};
+
+// Autocomplete mientras se escribe
+document.querySelectorAll('.geo-input').forEach(input => {
+    input.addEventListener('input', function () {
+        const id  = this.dataset.id;
+        const val = this.value.trim();
+        clearTimeout(debounceTimers[id]);
+
+        const sugg = document.getElementById('sugg' + id);
+        const msg  = document.getElementById('geoMsg' + id);
+
+        if (val.length < 4) { sugg.classList.remove('open'); sugg.innerHTML = ''; return; }
+
+        debounceTimers[id] = setTimeout(() => {
+            fetch(`${NOMINATIM}/search?format=json&q=${encodeURIComponent(val)}&countrycodes=mx&limit=5&addressdetails=1`, {
+                headers: { 'Accept-Language': 'es' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                sugg.innerHTML = '';
+                if (!data.length) { sugg.classList.remove('open'); return; }
+
+                data.forEach(place => {
+                    const item = document.createElement('div');
+                    item.className = 'geo-suggestion';
+                    item.innerHTML = `
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <span>${place.display_name}</span>`;
+                    item.addEventListener('click', () => {
+                        input.value = place.display_name;
+                        sugg.classList.remove('open');
+                        sugg.innerHTML = '';
+                        setMsg(id, 'ok', '✓ Ubicación seleccionada');
+                    });
+                    sugg.appendChild(item);
+                });
+                sugg.classList.add('open');
+            })
+            .catch(() => {});
+        }, 400); // espera 400ms tras dejar de escribir
+    });
+
+    // Cerrar sugerencias al hacer click fuera
+    document.addEventListener('click', e => {
+        const id = input.dataset.id;
+        if (!e.target.closest('#geoWrap' + id)) {
+            const sugg = document.getElementById('sugg' + id);
+            sugg.classList.remove('open');
+        }
+    });
+});
+
+// GPS del navegador → reverse geocoding Nominatim
+function usarGPS(btn, id) {
+    if (!navigator.geolocation) {
+        setMsg(id, 'error', 'Tu navegador no soporta la geolocalización.');
+        return;
+    }
+    btn.classList.add('loading');
+    setMsg(id, '', 'Obteniendo tu ubicación...');
+
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            const { latitude: lat, longitude: lon } = pos.coords;
+            fetch(`${NOMINATIM}/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`, {
+                headers: { 'Accept-Language': 'es' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                btn.classList.remove('loading');
+                if (data && data.display_name) {
+                    const input = document.querySelector(`.geo-input[data-id="${id}"]`);
+                    input.value = data.display_name;
+                    setMsg(id, 'ok', '✓ Ubicación GPS detectada');
+                } else {
+                    setMsg(id, 'error', 'No se pudo obtener la dirección.');
+                }
+            })
+            .catch(() => {
+                btn.classList.remove('loading');
+                setMsg(id, 'error', 'Error al conectar con el servicio de mapas.');
+            });
+        },
+        err => {
+            btn.classList.remove('loading');
+            const msgs = {
+                1: 'Permiso de ubicación denegado.',
+                2: 'No se pudo determinar la ubicación.',
+                3: 'Tiempo de espera agotado.'
+            };
+            setMsg(id, 'error', msgs[err.code] || 'Error de geolocalización.');
+        },
+        { timeout: 10000, maximumAge: 60000 }
+    );
+}
+
+function setMsg(id, type, text) {
+    const el = document.getElementById('geoMsg' + id);
+    el.className = 'geo-msg' + (type ? ' ' + type : '');
+    el.textContent = text;
+}
+</script>
 @endsection
