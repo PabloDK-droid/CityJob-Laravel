@@ -42,7 +42,6 @@ Route::group(['middleware' => 'role:cliente', 'prefix' => 'cliente', 'as' => 'cl
     Route::get('/calificar-servicio/{id}', [CalificacionController::class, 'create'])->name('calificarServicio');
     Route::post('/calificar-servicio', [CalificacionController::class, 'store'])->name('guardarCalificacion');
     Route::get('/descargar-factura/{id}', [FacturaController::class, 'descargarPDF'])->name('descargarFactura');
-    //Agregados
     Route::get('/pago/{id}', [FacturaController::class, 'crearSesionStripe'])->name('crearPago');
     Route::get('/pago-exitoso', [FacturaController::class, 'pagoExitoso'])->name('pagoExitoso');
     Route::get('/pago-cancelado', [FacturaController::class, 'pagoCancelado'])->name('pagoCancelado');
@@ -51,6 +50,8 @@ Route::group(['middleware' => 'role:cliente', 'prefix' => 'cliente', 'as' => 'cl
     Route::get('/chat/{id}/polling', [MensajeController::class, 'polling'])->name('chat.polling');
     Route::get('/historial', [HistorialController::class, 'cliente'])->name('historial');
     Route::get('/historial/{id}', [HistorialController::class, 'detalle'])->name('historial.detalle');
+    //Agregados
+    Route::get('/mis-calificaciones', [ClienteController::class, 'misCalificaciones'])->name('misCalificaciones');
 });
 
 // ===== RUTAS PARA TRABAJADORES/PROFESIONISTAS =====
@@ -64,12 +65,15 @@ Route::group(['middleware' => 'role:trabajador', 'prefix' => 'trabajador', 'as' 
     Route::get('/peticiones-pendientes', [ProfesionistaController::class, 'peticionesPendientes'])->name('peticionesPendientes');
     Route::post('/aceptar-trabajo/{id}', [ProfesionistaController::class, 'aceptarTrabajo'])->name('aceptarTrabajo');
     Route::post('/rechazar-trabajo/{id}', [ProfesionistaController::class, 'rechazarTrabajo'])->name('rechazarTrabajo');
-    //Agregados
     Route::get('/chat/{id}', [MensajeController::class, 'chat'])->name('chat');
     Route::post('/chat/{id}', [MensajeController::class, 'store'])->name('chat.store');
     Route::get('/chat/{id}/polling', [MensajeController::class, 'polling'])->name('chat.polling');
     Route::get('/historial', [HistorialController::class, 'profesionista'])->name('historial');
     Route::get('/historial/{id}', [HistorialController::class, 'detalle'])->name('historial.detalle');
+    //Agregados
+    Route::get('/mis-calificaciones', [CalificacionController::class, 'misCalificaciones'])->name('misCalificaciones');
+    Route::get('/calificar-cliente/{id}', [CalificacionController::class, 'createClienteRating'])->name('calificarCliente');
+    Route::post('/calificar-cliente', [CalificacionController::class, 'storeClienteRating'])->name('guardarCalificacionCliente');
 });
 
 // ===== RUTAS PARA ADMINISTRADORES =====

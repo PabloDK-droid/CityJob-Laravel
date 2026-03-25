@@ -9,18 +9,29 @@
     }
     .cj-page { display:flex; min-height:100vh; background:var(--navy); font-family:'Instrument Sans',sans-serif; }
 
-    .cj-sidebar { width:200px; flex-shrink:0; background:rgba(0,21,43,0.95); border-right:1px solid var(--border); display:flex; flex-direction:column; padding:1.75rem 1rem; position:sticky; top:0; height:100vh; }
-    .sidebar-brand { display:flex; align-items:center; gap:.55rem; margin-bottom:2rem; padding:0 .5rem; }
+    .cj-sidebar { 
+        width:200px; flex-shrink:0; background:rgba(0,21,43,0.95); 
+        border-right:1px solid var(--border); display:flex; flex-direction:column; 
+        padding:1.75rem 1rem; position:sticky; top:0; height:100vh; 
+    }
+    .sidebar-brand { display:flex; align-items:center; gap:.55rem; margin-bottom:2rem; padding:0 .5rem; text-decoration:none; }
     .sidebar-brand img { width:28px; height:28px; object-fit:contain; filter:drop-shadow(0 0 5px rgba(0,195,255,.5)); }
     .sidebar-brand span { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; color:var(--white); letter-spacing:-.5px; }
     .sidebar-brand span em { font-style:normal; color:var(--cyan); }
+    
     .sidebar-nav { display:flex; flex-direction:column; gap:.15rem; flex:1; }
     .sidebar-nav a { display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; border-radius:.6rem; color:var(--text-muted); text-decoration:none; font-size:.88rem; font-weight:600; transition:all .2s; }
     .sidebar-nav a:hover { background:rgba(0,195,255,.07); color:var(--white); }
+    .sidebar-nav a.active { background:rgba(0,195,255,.12); color:var(--cyan); border:1px solid rgba(0,195,255,.2); }
     .sidebar-nav a svg { flex-shrink:0; opacity:.7; }
-    .sidebar-nav a:hover svg { opacity:1; }
     .sidebar-divider { height:1px; background:var(--border); margin:.75rem 0; }
-    .sidebar-logout { display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; border-radius:.6rem; color:rgba(255,100,100,.6); font-size:.85rem; font-weight:600; cursor:pointer; transition:all .2s; background:none; border:none; width:100%; text-align:left; font-family:inherit; }
+    .sidebar-logout { 
+        display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; 
+        border-radius:.6rem; color:rgba(255,100,100,.6); font-size:.85rem; 
+        font-weight:600; cursor:pointer; transition:all .2s; 
+        background:none; border:none; width:100%; text-align:left; 
+        font-family:inherit; margin-top:auto; 
+    }
     .sidebar-logout:hover { background:rgba(255,80,80,.08); color:#ff6b6b; }
 
     .cj-main { flex:1; padding:2.5rem; overflow-y:auto; }
@@ -59,12 +70,12 @@
 
 <div class="cj-page">
     <aside class="cj-sidebar">
-        <div class="sidebar-brand">
+        <a href="{{ route('ingeniero.dashboard') }}" class="sidebar-brand">
             <img src="/img/CityJib_2.png" alt="CityJob">
             <span>City<em>Job</em></span>
-        </div>
+        </a>
         <nav class="sidebar-nav">
-            <a href="{{ route('ingeniero.dashboard') }}">
+            <a href="{{ route('ingeniero.dashboard') }}" class="active">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 Contrataciones
             </a>
@@ -79,6 +90,11 @@
             <a href="{{ route('ingeniero.historial') }}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 Historial
+            </a>
+            <div class="sidebar-divider"></div>
+            <a href="{{ route('ayuda') }}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Ayuda
             </a>
         </nav>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none">@csrf</form>
@@ -98,7 +114,6 @@
         </div>
 
         <div class="detail-grid">
-            {{-- Servicio --}}
             <div class="detail-card">
                 <p class="card-title">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -136,7 +151,6 @@
                 </div>
             </div>
 
-            {{-- Pago --}}
             <div class="detail-card">
                 <p class="card-title">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
@@ -164,10 +178,6 @@
                             <span class="info-label">Stripe ID</span>
                             <span class="info-value" style="font-size:.75rem;word-break:break-all">{{ $factura->stripe_id }}</span>
                         </div>
-                        <div class="info-row">
-                            <span class="info-label">Fecha emisión</span>
-                            <span class="info-value">{{ \Carbon\Carbon::parse($factura->fecha_emision)->format('d/m/Y') }}</span>
-                        </div>
                     @endif
                 @else
                     <div style="display:flex;align-items:center;justify-content:center;height:80px">
@@ -176,7 +186,6 @@
                 @endif
             </div>
 
-            {{-- Cliente --}}
             <div class="detail-card">
                 <p class="card-title">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -184,7 +193,7 @@
                 </p>
                 <div class="info-row">
                     <span class="info-label">Nombre</span>
-                    <span class="info-value">{{ $contratacion->cliente->nombres }} {{ $contratacion->cliente->apellido_p }} {{ $contratacion->cliente->apellido_m }}</span>
+                    <span class="info-value">{{ $contratacion->cliente->nombres }} {{ $contratacion->cliente->apellido_p }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Teléfono</span>
@@ -194,13 +203,8 @@
                     <span class="info-label">Email</span>
                     <span class="info-value" style="font-size:.8rem">{{ $contratacion->cliente->correo_electronico }}</span>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">Domicilio</span>
-                    <span class="info-value">{{ $contratacion->cliente->domicilio }}</span>
-                </div>
             </div>
 
-            {{-- Profesionista --}}
             <div class="detail-card">
                 <p class="card-title">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
@@ -209,14 +213,6 @@
                 <div class="info-row">
                     <span class="info-label">Nombre</span>
                     <span class="info-value">{{ $contratacion->profesionista->nombres }} {{ $contratacion->profesionista->apellido_p }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Teléfono</span>
-                    <span class="info-value">{{ $contratacion->profesionista->telefono }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Email</span>
-                    <span class="info-value" style="font-size:.8rem">{{ $contratacion->profesionista->correo_electronico }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Especialidad</span>
@@ -229,7 +225,6 @@
             </div>
         </div>
 
-        {{-- ACCIÓN CANCELAR --}}
         @if($contratacion->estado_emitor)
             <div class="action-card">
                 <p>Esta contratación está activa. Como ingeniero encargado puedes cancelarla si es necesario.</p>

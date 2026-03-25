@@ -10,7 +10,7 @@
     .cj-page { display:flex; min-height:100vh; background:var(--navy); font-family:'Instrument Sans',sans-serif; }
 
     .cj-sidebar { width:200px; flex-shrink:0; background:rgba(0,21,43,0.95); border-right:1px solid var(--border); display:flex; flex-direction:column; padding:1.75rem 1rem; position:sticky; top:0; height:100vh; }
-    .sidebar-brand { display:flex; align-items:center; gap:.55rem; margin-bottom:2rem; padding:0 .5rem; }
+    .sidebar-brand { display:flex; align-items:center; gap:.55rem; margin-bottom:2rem; padding:0 .5rem; text-decoration:none; }
     .sidebar-brand img { width:28px; height:28px; object-fit:contain; filter:drop-shadow(0 0 5px rgba(0,195,255,.5)); }
     .sidebar-brand span { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; color:var(--white); letter-spacing:-.5px; }
     .sidebar-brand span em { font-style:normal; color:var(--cyan); }
@@ -21,7 +21,7 @@
     .sidebar-nav a svg { flex-shrink:0; opacity:.7; }
     .sidebar-nav a:hover svg,.sidebar-nav a.active svg { opacity:1; }
     .sidebar-divider { height:1px; background:var(--border); margin:.75rem 0; }
-    .sidebar-logout { display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; border-radius:.6rem; color:rgba(255,100,100,.6); font-size:.85rem; font-weight:600; cursor:pointer; transition:all .2s; background:none; border:none; width:100%; text-align:left; font-family:inherit; }
+    .sidebar-logout { display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; border-radius:.6rem; color:rgba(255,100,100,.6); font-size:.85rem; font-weight:600; cursor:pointer; transition:all .2s; background:none; border:none; width:100%; text-align:left; font-family:inherit; margin-top:auto; }
     .sidebar-logout:hover { background:rgba(255,80,80,.08); color:#ff6b6b; }
 
     .cj-main { flex:1; padding:2.5rem; overflow-y:auto; }
@@ -70,10 +70,10 @@
 
 <div class="cj-page">
     <aside class="cj-sidebar">
-        <div class="sidebar-brand">
+        <a href="{{ route('trabajador.dashboard') }}" class="sidebar-brand">
             <img src="/img/CityJib_2.png" alt="CityJob">
             <span>City<em>Job</em></span>
-        </div>
+        </a>
         <nav class="sidebar-nav">
             <a href="{{ route('trabajador.dashboard') }}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -86,6 +86,10 @@
             <a href="{{ route('trabajador.serviciosAsignados') }}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 Servicios
+            </a>
+            <a href="{{ route('trabajador.misCalificaciones') }}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Calificaciones
             </a>
             <a href="{{ route('trabajador.historial') }}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>

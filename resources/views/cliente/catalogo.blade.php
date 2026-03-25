@@ -25,7 +25,7 @@
         padding:1.75rem 1rem;
         position:sticky; top:0; height:100vh;
     }
-    .sidebar-brand { display:flex; align-items:center; gap:.55rem; margin-bottom:2rem; padding:0 .5rem; }
+    .sidebar-brand { display:flex; align-items:center; gap:.55rem; margin-bottom:2rem; padding:0 .5rem; text-decoration:none; }
     .sidebar-brand img { width:28px; height:28px; object-fit:contain; filter:drop-shadow(0 0 5px rgba(0,195,255,.5)); }
     .sidebar-brand span { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; color:var(--white); letter-spacing:-.5px; }
     .sidebar-brand span em { font-style:normal; color:var(--cyan); }
@@ -46,7 +46,7 @@
         padding:.6rem .75rem; border-radius:.6rem;
         color:rgba(255,100,100,.6); font-size:.85rem; font-weight:600;
         cursor:pointer; transition:all .2s;
-        background:none; border:none; width:100%; text-align:left; font-family:inherit;
+        background:none; border:none; width:100%; text-align:left; font-family:inherit ; margin-top:auto;
     }
     .sidebar-logout:hover { background:rgba(255,80,80,.08); color:#ff6b6b; }
 
@@ -166,10 +166,10 @@
 
 <div class="cj-page">
     <aside class="cj-sidebar">
-        <div class="sidebar-brand">
+        <a href="{{ route('cliente.dashboard') }}" class="sidebar-brand">
             <img src="/img/CityJib_2.png" alt="CityJob">
             <span>City<em>Job</em></span>
-        </div>
+        </a>
         <nav class="sidebar-nav">
             <a href="{{ route('cliente.dashboard') }}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -186,6 +186,10 @@
             <a href="{{ route('cliente.historial') }}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 Historial
+            </a>
+            <a href="{{ route('cliente.misCalificaciones') }}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Calificaciones
             </a>
             <div class="sidebar-divider"></div>
             <a href="{{ route('cliente.editarPerfil') }}">

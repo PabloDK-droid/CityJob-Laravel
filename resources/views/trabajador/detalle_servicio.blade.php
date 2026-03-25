@@ -17,14 +17,12 @@
     .sidebar-nav { display:flex; flex-direction:column; gap:.15rem; flex:1; }
     .sidebar-nav a { display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; border-radius:.6rem; color:var(--text-muted); text-decoration:none; font-size:.88rem; font-weight:600; transition:all .2s; }
     .sidebar-nav a:hover { background:rgba(0,195,255,.07); color:var(--white); }
+    .sidebar-nav a.active { background:rgba(0,195,255,.12); color:var(--cyan); border:1px solid rgba(0,195,255,.2); }
     .sidebar-nav a svg { flex-shrink:0; opacity:.7; }
     .sidebar-nav a:hover svg { opacity:1; }
     .sidebar-divider { height:1px; background:var(--border); margin:.75rem 0; }
-    .sidebar-logout { display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; border-radius:.6rem; color:rgba(255,100,100,.6); font-size:.85rem; font-weight:600; cursor:pointer; transition:all .2s; background:none; border:none; width:100%; text-align:left; font-family:inherit; }
-    .sidebar-logout:hover { background:rgba(255,80,80,.08); color:#ff6b6b; }
-
+    .sidebar-logout { display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; border-radius:.6rem; color:rgba(255,100,100,.6); font-size:.85rem; font-weight:600; cursor:pointer; transition:all .2s; background:none; border:none; width:100%; text-align:left; font-family:inherit; margin-top:auto; }    .sidebar-logout:hover { background:rgba(255,80,80,.08); color:#ff6b6b; }
     .cj-main { flex:1; padding:2.5rem; overflow-y:auto; }
-
     .page-header { margin-bottom:2rem; }
     .btn-back { display:inline-flex; align-items:center; gap:.4rem; color:var(--text-muted); text-decoration:none; font-size:.85rem; font-weight:600; transition:color .2s; margin-bottom:1rem; }
     .btn-back:hover { color:var(--cyan); }
@@ -66,6 +64,10 @@
             <a href="{{ route('trabajador.serviciosAsignados') }}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 Servicios
+            </a>
+            <a href="{{ route('trabajador.misCalificaciones') }}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Calificaciones
             </a>
             <a href="{{ route('trabajador.historial') }}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -112,10 +114,14 @@
                 <div class="info-row">
                     <span class="info-label">Estado</span>
                     <span class="info-value">
-                        @if($contratacion->estado_emitor)
+                        @if($contratacion->estado == 'completado')
+                            <span class="badge-activo">Completado</span>
+                        @elseif($contratacion->estado == 'activo')
                             <span class="badge-activo">Activo</span>
-                        @else
+                        @elseif($contratacion->estado == 'cancelado')
                             <span class="badge-cancelado">Cancelado</span>
+                        @else
+                            <span class="badge-activo">{{ ucfirst($contratacion->estado) }}</span>
                         @endif
                     </span>
                 </div>
