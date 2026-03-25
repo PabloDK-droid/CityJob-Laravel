@@ -9,19 +9,31 @@
     }
     .cj-page { display:flex; min-height:100vh; background:var(--navy); font-family:'Instrument Sans',sans-serif; }
 
-    .cj-sidebar { width:200px; flex-shrink:0; background:rgba(0,21,43,0.95); border-right:1px solid var(--border); display:flex; flex-direction:column; padding:1.75rem 1rem; position:sticky; top:0; height:100vh; }
-    .sidebar-brand { display:flex; align-items:center; gap:.55rem; margin-bottom:2rem; padding:0 .5rem; }
+    .cj-sidebar { 
+        width:200px; flex-shrink:0; background:rgba(0,21,43,0.95); 
+        border-right:1px solid var(--border); display:flex; flex-direction:column; 
+        padding:1.75rem 1rem; position:sticky; top:0; height:100vh; 
+    }
+    .sidebar-brand { display:flex; align-items:center; gap:.55rem; margin-bottom:2rem; padding:0 .5rem; text-decoration:none; }
     .sidebar-brand img { width:28px; height:28px; object-fit:contain; filter:drop-shadow(0 0 5px rgba(0,195,255,.5)); }
     .sidebar-brand span { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; color:var(--white); letter-spacing:-.5px; }
     .sidebar-brand span em { font-style:normal; color:var(--cyan); }
+    
     .sidebar-nav { display:flex; flex-direction:column; gap:.15rem; flex:1; }
     .sidebar-nav a { display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; border-radius:.6rem; color:var(--text-muted); text-decoration:none; font-size:.88rem; font-weight:600; transition:all .2s; }
     .sidebar-nav a:hover { background:rgba(0,195,255,.07); color:var(--white); }
     .sidebar-nav a.active { background:rgba(0,195,255,.12); color:var(--cyan); border:1px solid rgba(0,195,255,.2); }
     .sidebar-nav a svg { flex-shrink:0; opacity:.7; }
     .sidebar-nav a:hover svg,.sidebar-nav a.active svg { opacity:1; }
+    
     .sidebar-divider { height:1px; background:var(--border); margin:.75rem 0; }
-    .sidebar-logout { display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; border-radius:.6rem; color:rgba(255,100,100,.6); font-size:.85rem; font-weight:600; cursor:pointer; transition:all .2s; background:none; border:none; width:100%; text-align:left; font-family:inherit; }
+    .sidebar-logout { 
+        display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; 
+        border-radius:.6rem; color:rgba(255,100,100,.6); font-size:.85rem; 
+        font-weight:600; cursor:pointer; transition:all .2s; 
+        background:none; border:none; width:100%; text-align:left; 
+        font-family:inherit; margin-top:auto; 
+    }
     .sidebar-logout:hover { background:rgba(255,80,80,.08); color:#ff6b6b; }
 
     .cj-main { flex:1; padding:2.5rem; overflow-y:auto; }
@@ -32,18 +44,16 @@
 
     .alert-success { background:rgba(0,195,255,.08); border:1px solid rgba(0,195,255,.2); color:var(--cyan); padding:.75rem 1rem; border-radius:.75rem; font-size:.88rem; margin-bottom:1.5rem; }
 
-    /* filtro */
     .filter-bar { margin-bottom:1.5rem; display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; }
     .search-wrap { position:relative; flex:1; min-width:200px; max-width:360px; }
     .search-wrap svg { position:absolute; left:.85rem; top:50%; transform:translateY(-50%); color:var(--text-muted); pointer-events:none; }
-    .search-input { width:100%; padding:.65rem 1rem .65rem 2.4rem; background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:.7rem; color:var(--white); font-family:'Instrument Sans',sans-serif; font-size:.88rem; outline:none; transition:border-color .2s; }
+    .search-input { width:100%; padding:.65rem 1rem .65rem 2.4rem; background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:.7; color:var(--white); font-family:'Instrument Sans',sans-serif; font-size:.88rem; outline:none; transition:border-color .2s; }
     .search-input:focus { border-color:var(--cyan); }
     .search-input::placeholder { color:rgba(139,170,200,.4); }
     .filter-select { padding:.65rem 1rem; background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:.7rem; color:var(--white); font-family:'Instrument Sans',sans-serif; font-size:.88rem; outline:none; cursor:pointer; }
     .filter-select:focus { border-color:var(--cyan); }
     .filter-select option { background:#002647; }
 
-    /* tabla */
     .table-wrap { overflow-x:auto; border-radius:1rem; border:1px solid var(--border); }
     table { width:100%; border-collapse:collapse; }
     thead tr { border-bottom:1px solid var(--border); }
@@ -73,10 +83,10 @@
 
 <div class="cj-page">
     <aside class="cj-sidebar">
-        <div class="sidebar-brand">
+        <a href="{{ route('ingeniero.dashboard') }}" class="sidebar-brand">
             <img src="/img/CityJib_2.png" alt="CityJob">
             <span>City<em>Job</em></span>
-        </div>
+        </a>
         <nav class="sidebar-nav">
             <a href="{{ route('ingeniero.dashboard') }}" class="active">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -93,6 +103,11 @@
             <a href="{{ route('ingeniero.historial') }}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 Historial
+            </a>
+            <div class="sidebar-divider"></div>
+            <a href="{{ route('ayuda') }}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Ayuda
             </a>
         </nav>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none">@csrf</form>

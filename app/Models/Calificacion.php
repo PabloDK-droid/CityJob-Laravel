@@ -8,22 +8,25 @@ class Calificacion extends Model
 {
     protected $table = 'DimensionCalificaciones';
     protected $primaryKey = 'id_calificaciones';
-    public $timestamps = false; // Porque solo tenemos created_at
+    public $timestamps = false;
 
     protected $fillable = [
-        'id_cliente', 
-        'id_profesionista', 
-        'calificacion', 
-        'comentario', // AGREGADO
+        'id_cliente',
+        'id_profesionista',
+        'calificacion',
+        'comentario',
         'total_calif',
+        'tipo',
         'created_at'
     ];
 
-    public function cliente() { 
-        return $this->belongsTo(Cliente::class, 'id_cliente'); 
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'id_cliente');
     }
-    
-    public function profesionista() { 
-        return $this->belongsTo(Profesionista::class, 'id_profesionista'); 
+
+    public function profesionista()
+    {
+        return $this->belongsTo(Profesionista::class, 'id_profesionista');
     }
 }

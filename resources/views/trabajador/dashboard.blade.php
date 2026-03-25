@@ -17,7 +17,7 @@
 
     .cj-page {
         display: flex;
-        min-height: calc(100vh - 56px);
+        min-height: 100vh;
         background: var(--navy);
         font-family: 'Instrument Sans', sans-serif;
     }
@@ -32,8 +32,8 @@
         flex-direction: column;
         padding: 1.75rem 1rem;
         position: sticky;
-        top: 56px;
-        height: calc(100vh - 56px);
+        top: 0;
+        height: 100vh;
     }
 
     .sidebar-brand {
@@ -42,6 +42,7 @@
         gap: .55rem;
         margin-bottom: 2rem;
         padding: 0 .5rem;
+        text-decoration: none;
     }
     .sidebar-brand img {
         width: 28px; height: 28px;
@@ -109,6 +110,7 @@
         width: 100%;
         text-align: left;
         font-family: inherit;
+        margin-top: auto;
     }
     .sidebar-logout:hover {
         background: rgba(255,80,80,.08);
@@ -322,10 +324,10 @@
 
     {{-- SIDEBAR --}}
     <aside class="cj-sidebar">
-        <div class="sidebar-brand">
+        <a href="{{ route('trabajador.dashboard') }}" class="sidebar-brand">
             <img src="/img/CityJib_2.png" alt="CityJob">
             <span>City<em>Job</em></span>
-        </div>
+        </a>
 
         <nav class="sidebar-nav">
             <a href="{{ route('trabajador.dashboard') }}" class="active">
@@ -339,6 +341,10 @@
             <a href="{{ route('trabajador.serviciosAsignados') }}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 Servicios
+            </a>
+            <a href="{{ route('trabajador.misCalificaciones') }}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Calificaciones
             </a>
             <a href="{{ route('trabajador.historial') }}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -414,6 +420,14 @@
                 </div>
                 <div class="quick-label">Servicios</div>
                 <div class="quick-sub">Trabajos activos y completados</div>
+            </a>
+
+            <a href="{{ route('trabajador.misCalificaciones') }}" class="quick-card">
+                <div class="quick-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <div class="quick-label">Calificaciones</div>
+                <div class="quick-sub">Mira lo que dicen tus clientes</div>
             </a>
 
             <a href="{{ route('trabajador.historial') }}" class="quick-card">

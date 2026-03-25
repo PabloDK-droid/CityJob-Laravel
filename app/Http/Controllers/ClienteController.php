@@ -165,4 +165,19 @@ public function contratar(Request $request)
         $cliente->update($request->all());
         return response()->json(['mensaje' => 'Datos actualizados', 'data' => $cliente]);
     }
+
+    public function misCalificaciones()
+    {
+        $cliente_id = session('user_id');
+
+        $calificaciones = \App\Models\Calificacion::with('profesionista')
+            ->where('id_cliente', $cliente_id)
+            ->where('tipo', 'profesionista_a_cliente')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $promedio = $calificaciones->avg('calificacion') ?? 0;
+
+        return view('cliente.mis_calificaciones', compact('calificaciones', 'promedio'));
+    }
 }

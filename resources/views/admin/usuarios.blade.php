@@ -10,7 +10,7 @@
     .cj-page { display:flex; min-height:100vh; background:var(--navy); font-family:'Instrument Sans',sans-serif; }
 
     .cj-sidebar { width:200px; flex-shrink:0; background:rgba(0,21,43,0.95); border-right:1px solid var(--border); display:flex; flex-direction:column; padding:1.75rem 1rem; position:sticky; top:0; height:100vh; }
-    .sidebar-brand { display:flex; align-items:center; gap:.55rem; margin-bottom:2rem; padding:0 .5rem; }
+    .sidebar-brand { display:flex; align-items:center; gap:.55rem; margin-bottom:2rem; padding:0 .5rem; text-decoration:none; }
     .sidebar-brand img { width:28px; height:28px; object-fit:contain; filter:drop-shadow(0 0 5px rgba(0,195,255,.5)); }
     .sidebar-brand span { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; color:var(--white); letter-spacing:-.5px; }
     .sidebar-brand span em { font-style:normal; color:var(--cyan); }
@@ -19,9 +19,13 @@
     .sidebar-nav a:hover { background:rgba(0,195,255,.07); color:var(--white); }
     .sidebar-nav a.active { background:rgba(0,195,255,.12); color:var(--cyan); border:1px solid rgba(0,195,255,.2); }
     .sidebar-nav a svg { flex-shrink:0; opacity:.7; }
-    .sidebar-nav a:hover svg,.sidebar-nav a.active svg { opacity:1; }
     .sidebar-divider { height:1px; background:var(--border); margin:.75rem 0; }
-    .sidebar-logout { display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; border-radius:.6rem; color:rgba(255,100,100,.6); font-size:.85rem; font-weight:600; cursor:pointer; transition:all .2s; background:none; border:none; width:100%; text-align:left; font-family:inherit; }
+    .sidebar-logout { 
+        display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; border-radius:.6rem; 
+        color:rgba(255,100,100,.6); font-size:.85rem; font-weight:600; cursor:pointer; 
+        transition:all .2s; background:none; border:none; width:100%; text-align:left; 
+        font-family:inherit; margin-top:auto; 
+    }
     .sidebar-logout:hover { background:rgba(255,80,80,.08); color:#ff6b6b; }
 
     .cj-main { flex:1; padding:2.5rem; overflow-y:auto; }
@@ -36,12 +40,10 @@
     .alert-success { background:rgba(0,195,255,.08); border:1px solid rgba(0,195,255,.2); color:var(--cyan); }
     .alert-error   { background:rgba(220,53,69,.1);  border:1px solid rgba(220,53,69,.25); color:#ff6b7a; }
 
-    /* sección */
     .section-block { margin-bottom:2.5rem; }
     .section-title { font-family:'Syne',sans-serif; font-size:.85rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:1rem; display:flex; align-items:center; gap:.5rem; }
     .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
 
-    /* tabla */
     .table-wrap { overflow-x:auto; border-radius:1rem; border:1px solid var(--border); margin-bottom:1rem; }
     table { width:100%; border-collapse:collapse; }
     thead tr { border-bottom:1px solid var(--border); }
@@ -53,7 +55,6 @@
     .text-muted { color:var(--text-muted); font-size:.78rem; }
     .rating { color:#ffc107; font-size:.82rem; font-weight:700; }
 
-    /* acciones inline */
     .td-actions { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
     .inline-select {
         padding:.35rem .6rem; background:rgba(255,255,255,.06);
@@ -62,40 +63,37 @@
         font-size:.75rem; outline:none; cursor:pointer;
     }
     .inline-select:focus { border-color:var(--cyan); }
-    .inline-select option { background:#002647; }
+    .inline-select option { background:#002647; color:var(--white); }
     .btn-sm { display:inline-flex; align-items:center; padding:.35rem .75rem; border-radius:.5rem; font-size:.75rem; font-weight:700; border:none; cursor:pointer; transition:all .2s; font-family:'Instrument Sans',sans-serif; white-space:nowrap; }
     .btn-cambiar  { background:rgba(0,195,255,.12); color:var(--cyan); border:1px solid rgba(0,195,255,.2); }
     .btn-cambiar:hover { background:rgba(0,195,255,.22); }
     .btn-eliminar { background:rgba(220,53,69,.1);  color:#ff6b7a;   border:1px solid rgba(220,53,69,.2); }
     .btn-eliminar:hover { background:rgba(220,53,69,.2); }
 
-    /* form nuevo trabajador */
     .form-card { background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:1.25rem; padding:2rem; max-width:700px; }
     .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
     .form-full { grid-column:1/-1; }
     .form-group { display:flex; flex-direction:column; gap:.4rem; }
     .form-group label { font-size:.82rem; font-weight:600; color:#a8c5e0; }
-    .form-group input,.form-group select {
+    .form-group input, .form-group select {
         padding:.7rem 1rem; background:rgba(255,255,255,.06);
         border:1px solid var(--border); border-radius:.65rem;
         color:var(--white); font-family:'Instrument Sans',sans-serif;
         font-size:.9rem; outline:none; transition:border-color .2s, box-shadow .2s; width:100%;
     }
-    .form-group input:focus,.form-group select:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(0,195,255,.1); }
-    .form-group input::placeholder { color:rgba(139,170,200,.35); }
-    .form-group select option { background:#002647; }
+    .form-group input:focus, .form-group select:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(0,195,255,.1); }
+    .form-group select option { background:#002647; color:var(--white); }
     .btn-submit { background:var(--cyan); color:var(--navy); padding:.75rem 2rem; border-radius:.65rem; font-family:'Syne',sans-serif; font-weight:700; font-size:.95rem; border:none; cursor:pointer; transition:all .2s; margin-top:.5rem; }
-    .btn-submit:hover { background:var(--cyan-dim); transform:translateY(-1px); }
 
     @media(max-width:900px) { .cj-sidebar{display:none} .cj-main{padding:1.5rem 1rem} .form-grid{grid-template-columns:1fr} }
 </style>
 
 <div class="cj-page">
     <aside class="cj-sidebar">
-        <div class="sidebar-brand">
+        <a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
             <img src="/img/CityJib_2.png" alt="CityJob">
             <span>City<em>Job</em></span>
-        </div>
+        </a>
         <nav class="sidebar-nav">
             <a href="{{ route('admin.dashboard') }}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -193,8 +191,6 @@
                         </tbody>
                     </table>
                 </div>
-            @else
-                <p class="text-muted">No hay clientes registrados.</p>
             @endif
         </div>
 
@@ -235,90 +231,6 @@
                         </tbody>
                     </table>
                 </div>
-            @else
-                <p class="text-muted">No hay profesionistas registrados.</p>
-            @endif
-        </div>
-
-        {{-- ADMINISTRADORES --}}
-        <div class="section-block">
-            <p class="section-title">Administradores ({{ $administradores->count() }})</p>
-            @if($administradores->count() > 0)
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>#</th><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Acciones</th></tr></thead>
-                        <tbody>
-                            @foreach($administradores as $adm)
-                                <tr>
-                                    <td class="text-muted">{{ $adm->id_administrador }}</td>
-                                    <td style="font-weight:600">{{ $adm->nombres }} {{ $adm->apellido_p }}</td>
-                                    <td class="text-muted">{{ $adm->correo_electronico }}</td>
-                                    <td class="text-muted">{{ $adm->telefono }}</td>
-                                    <td>
-                                        <div class="td-actions">
-                                            <form action="{{ route('admin.cambiarRol') }}" method="POST" style="display:contents">
-                                                @csrf
-                                                <input type="hidden" name="usuario_id" value="{{ $adm->id_administrador }}">
-                                                <input type="hidden" name="rol_actual" value="admin">
-                                                <select name="rol_nuevo" class="inline-select">{!! rolOptions('admin') !!}</select>
-                                                <button type="submit" class="btn-sm btn-cambiar">Cambiar</button>
-                                            </form>
-                                            <form action="{{ route('admin.eliminarUsuario') }}" method="POST" style="display:contents">
-                                                @csrf
-                                                <input type="hidden" name="usuario_id" value="{{ $adm->id_administrador }}">
-                                                <input type="hidden" name="rol" value="admin">
-                                                <button type="submit" class="btn-sm btn-eliminar" onclick="return confirm('¿Eliminar usuario?')">Eliminar</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <p class="text-muted">No hay administradores registrados.</p>
-            @endif
-        </div>
-
-        {{-- INGENIEROS --}}
-        <div class="section-block">
-            <p class="section-title">Ingenieros / Encargados ({{ $encargados->count() }})</p>
-            @if($encargados->count() > 0)
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>#</th><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Acciones</th></tr></thead>
-                        <tbody>
-                            @foreach($encargados as $enc)
-                                <tr>
-                                    <td class="text-muted">{{ $enc->id_encargado }}</td>
-                                    <td style="font-weight:600">{{ $enc->nombres }} {{ $enc->apellido_p }}</td>
-                                    <td class="text-muted">{{ $enc->correo_electronico }}</td>
-                                    <td class="text-muted">{{ $enc->telefono }}</td>
-                                    <td>
-                                        <div class="td-actions">
-                                            <form action="{{ route('admin.cambiarRol') }}" method="POST" style="display:contents">
-                                                @csrf
-                                                <input type="hidden" name="usuario_id" value="{{ $enc->id_encargado }}">
-                                                <input type="hidden" name="rol_actual" value="ingeniero">
-                                                <select name="rol_nuevo" class="inline-select">{!! rolOptions('ingeniero') !!}</select>
-                                                <button type="submit" class="btn-sm btn-cambiar">Cambiar</button>
-                                            </form>
-                                            <form action="{{ route('admin.eliminarUsuario') }}" method="POST" style="display:contents">
-                                                @csrf
-                                                <input type="hidden" name="usuario_id" value="{{ $enc->id_encargado }}">
-                                                <input type="hidden" name="rol" value="ingeniero">
-                                                <button type="submit" class="btn-sm btn-eliminar" onclick="return confirm('¿Eliminar usuario?')">Eliminar</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <p class="text-muted">No hay ingenieros registrados.</p>
             @endif
         </div>
 
@@ -329,53 +241,17 @@
                 <form action="{{ route('admin.registerWorker') }}" method="POST">
                     @csrf
                     <div class="form-grid">
-                        <div class="form-group">
-                            <label>Nombres</label>
-                            <input type="text" name="nombres" required placeholder="Nombres">
-                        </div>
-                        <div class="form-group">
-                            <label>Género</label>
-                            <select name="genero" required>
-                                <option value="M">Masculino</option>
-                                <option value="F">Femenino</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Apellido Paterno</label>
-                            <input type="text" name="apellido_p" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Apellido Materno</label>
-                            <input type="text" name="apellido_m">
-                        </div>
-                        <div class="form-group">
-                            <label>Teléfono</label>
-                            <input type="text" name="telefono" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" name="correo_electronico" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Nivel de Estudios</label>
-                            <input type="text" name="nivel_estudios" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Especialidad</label>
-                            <input type="text" name="especializado" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Código Postal</label>
-                            <input type="number" name="cp" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Contraseña</label>
-                            <input type="password" name="contrasena" required placeholder="••••••••">
-                        </div>
-                        <div class="form-group form-full">
-                            <label>Domicilio</label>
-                            <input type="text" name="domicilio" required>
-                        </div>
+                        <div class="form-group"><label>Nombres</label><input type="text" name="nombres" required placeholder="Nombres"></div>
+                        <div class="form-group"><label>Género</label><select name="genero" required><option value="M">Masculino</option><option value="F">Femenino</option></select></div>
+                        <div class="form-group"><label>Apellido Paterno</label><input type="text" name="apellido_p" required></div>
+                        <div class="form-group"><label>Apellido Materno</label><input type="text" name="apellido_m"></div>
+                        <div class="form-group"><label>Teléfono</label><input type="text" name="telefono" required></div>
+                        <div class="form-group"><label>Email</label><input type="email" name="correo_electronico" required></div>
+                        <div class="form-group"><label>Nivel de Estudios</label><input type="text" name="nivel_estudios" required></div>
+                        <div class="form-group"><label>Especialidad</label><input type="text" name="especializado" required></div>
+                        <div class="form-group"><label>Código Postal</label><input type="number" name="cp" required></div>
+                        <div class="form-group"><label>Contraseña</label><input type="password" name="contrasena" required placeholder="••••••••"></div>
+                        <div class="form-group form-full"><label>Domicilio</label><input type="text" name="domicilio" required></div>
                     </div>
                     <button type="submit" class="btn-submit">Registrar Trabajador</button>
                 </form>
