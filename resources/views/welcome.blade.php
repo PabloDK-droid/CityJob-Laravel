@@ -528,7 +528,7 @@
                 </h1>
 
                 <p class="hero-desc fade-up">
-                    Conecta con profesionales calificados cerca de ti. Plomería, electricidad, carpintería, tecnología y más — todo gestionado en un solo lugar con pagos seguros.
+                    Conecta con profesionales calificados cerca de ti. Plomería, electricidad, carpintería, tecnología y más — todo gestionado en un solo lugar.
                 </p>
 
                 <div class="hero-cta fade-up">
@@ -540,10 +540,6 @@
                     <div class="stat-item">
                         <span class="stat-num">100%</span>
                         <span class="stat-label">Pagos seguros</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-num">4</span>
-                        <span class="stat-label">Roles de usuario</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-num">10%</span>
@@ -583,7 +579,7 @@
             <div class="step-card">
                 <div class="step-num">03</div>
                 <h3>Paga y califica</h3>
-                <p>Realiza el pago seguro con tarjeta, recibe tu factura PDF y evalúa al profesionista al finalizar.</p>
+                <p>Realiza el pago seguro con tarjeta, recibe tu factura y evalúa al profesionista al finalizar.</p>
             </div>
         </div>
     </section>

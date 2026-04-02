@@ -40,8 +40,10 @@
     .info-label { font-size:.82rem; color:var(--text-muted); flex-shrink:0; }
     .info-value { font-size:.88rem; color:var(--white); font-weight:600; text-align:right; }
 
-    .badge-activo   { display:inline-block; padding:.3rem .75rem; border-radius:100px; font-size:.75rem; font-weight:700; background:rgba(0,168,107,.12); color:#00d68f; border:1px solid rgba(0,168,107,.2); }
-    .badge-cancelado { display:inline-block; padding:.3rem .75rem; border-radius:100px; font-size:.75rem; font-weight:700; background:rgba(220,53,69,.1); color:#ff6b7a; border:1px solid rgba(220,53,69,.2); }
+    .badge-activo     { display:inline-block; padding:.3rem .75rem; border-radius:100px; font-size:.75rem; font-weight:700; background:rgba(0,168,107,.12); color:#00d68f; border:1px solid rgba(0,168,107,.2); }
+    .badge-completado { display:inline-block; padding:.3rem .75rem; border-radius:100px; font-size:.75rem; font-weight:700; background:rgba(0,195,255,.1); color:#00C3FF; border:1px solid rgba(0,195,255,.2); }
+    .badge-cancelado  { display:inline-block; padding:.3rem .75rem; border-radius:100px; font-size:.75rem; font-weight:700; background:rgba(220,53,69,.1); color:#ff6b7a; border:1px solid rgba(220,53,69,.2); }
+    .badge-pago       { display:inline-block; padding:.3rem .75rem; border-radius:100px; font-size:.75rem; font-weight:700; background:rgba(255,149,0,.1); color:#ffb347; border:1px solid rgba(255,149,0,.2); }
 
     @media(max-width:900px) { .cj-sidebar{display:none} .cj-main{padding:1.5rem 1rem} .detail-grid{grid-template-columns:1fr} }
 </style>
@@ -115,9 +117,11 @@
                     <span class="info-label">Estado</span>
                     <span class="info-value">
                         @if($contratacion->estado == 'completado')
-                            <span class="badge-activo">Completado</span>
+                            <span class="badge-completado">Completado</span>
                         @elseif($contratacion->estado == 'activo')
                             <span class="badge-activo">Activo</span>
+                        @elseif($contratacion->estado == 'pago_pendiente')
+                            <span class="badge-pago">Pago pendiente</span>
                         @elseif($contratacion->estado == 'cancelado')
                             <span class="badge-cancelado">Cancelado</span>
                         @else

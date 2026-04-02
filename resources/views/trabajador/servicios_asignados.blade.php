@@ -21,11 +21,10 @@
     .sidebar-nav a svg { flex-shrink:0; opacity:.7; }
     .sidebar-nav a:hover svg,.sidebar-nav a.active svg { opacity:1; }
     .sidebar-divider { height:1px; background:var(--border); margin:.75rem 0; }
-    .sidebar-logout { display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; border-radius:.6rem; color:rgba(255,100,100,.6); font-size:.85rem; font-weight:600; cursor:pointer; transition:all .2s; background:none; border:none; width:100%; text-align:left; font-family:inherit; }
+    .sidebar-logout { display:flex; align-items:center; gap:.6rem; padding:.6rem .75rem; border-radius:.6rem; color:rgba(255,100,100,.6); font-size:.85rem; font-weight:600; cursor:pointer; transition:all .2s; background:none; border:none; width:100%; text-align:left; font-family:inherit; margin-top:auto; }
     .sidebar-logout:hover { background:rgba(255,80,80,.08); color:#ff6b6b; }
 
     .cj-main { flex:1; padding:2.5rem; overflow-y:auto; }
-
     .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:2rem; flex-wrap:wrap; gap:1rem; }
     .page-title { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; letter-spacing:-.5px; }
     .page-title span { color:var(--cyan); }
@@ -38,9 +37,10 @@
     table { width:100%; border-collapse:collapse; }
     thead tr { border-bottom:1px solid var(--border); }
     thead th { padding:.85rem 1rem; text-align:left; font-size:.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.8px; white-space:nowrap; }
-    tbody tr { border-bottom:1px solid rgba(0,195,255,.07); transition:background .15s; }
-    tbody tr:last-child { border-bottom:none; }
-    tbody tr:hover { background:rgba(0,195,255,.03); }
+    tbody tr.data-row { border-bottom:1px solid rgba(0,195,255,.07); transition:background .15s; }
+    tbody tr.data-row:hover { background:rgba(0,195,255,.03); }
+    tbody tr.expand-row { border-bottom:1px solid rgba(0,195,255,.07); }
+    tbody tr.expand-row:last-child { border-bottom:none; }
     td { padding:.85rem 1rem; font-size:.88rem; color:var(--white); vertical-align:middle; }
     .text-muted { color:var(--text-muted); font-size:.82rem; }
 
@@ -58,6 +58,21 @@
     .btn-chat:hover { background:rgba(108,92,231,.25); }
     .btn-completar { background:rgba(0,214,143,.12); color:#00d68f; border:1px solid rgba(0,214,143,.2); }
     .btn-completar:hover { background:rgba(0,214,143,.22); }
+    .btn-toggle { background:rgba(255,255,255,.05); color:var(--text-muted); border:1px solid var(--border); }
+    .btn-toggle:hover { background:rgba(255,255,255,.1); color:var(--white); }
+
+    /* Fila expandible de calificación */
+    .calif-row { display:none; background:rgba(0,195,255,.02); }
+    .calif-row.visible { display:table-row; }
+    .calif-panel { padding:1rem 1.5rem 1.25rem; display:flex; gap:2rem; flex-wrap:wrap; align-items:flex-start; }
+    .calif-block { flex:1; min-width:200px; }
+    .calif-block-title { font-size:.72rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.8px; margin-bottom:.5rem; }
+    .calif-num { font-family:'Syne',sans-serif; font-size:1.4rem; font-weight:800; color:#ffc107; }
+    .calif-label { font-size:.78rem; color:var(--text-muted); margin-left:.3rem; }
+    .stars-row { color:#ffc107; font-size:.95rem; letter-spacing:2px; margin-left:.25rem; }
+    .calif-comment { font-size:.88rem; color:var(--text-muted); font-style:italic; line-height:1.55; margin-top:.4rem; padding:.65rem .9rem; background:rgba(255,255,255,.03); border-left:2px solid rgba(0,195,255,.3); border-radius:0 .5rem .5rem 0; }
+    .no-comment { font-size:.82rem; color:rgba(139,170,200,.4); font-style:italic; }
+    .calif-pending { font-size:.84rem; color:var(--text-muted); display:flex; align-items:center; gap:.4rem; }
 
     .empty-state { text-align:center; padding:4rem 2rem; color:var(--text-muted); }
     .empty-state svg { color:rgba(0,195,255,.2); margin-bottom:1rem; }
@@ -138,7 +153,30 @@
                     </thead>
                     <tbody>
                         @foreach($contrataciones as $c)
-                            <tr>
+                            @php
+                                $esCompletado      = $c->estado === 'completado';
+                                $profesionista_id  = session('user_id');
+
+                                $califRecibida = null; // calificación del cliente al trabajador
+                                $califDada     = null; // calificación del trabajador al cliente
+
+                                if ($esCompletado) {
+                                    $califRecibida = \App\Models\Calificacion::where('id_profesionista', $profesionista_id)
+                                        ->where('id_cliente', $c->id_cliente)
+                                        ->where('tipo', 'cliente_a_profesionista')
+                                        ->first();
+
+                                    $califDada = \App\Models\Calificacion::where('id_profesionista', $profesionista_id)
+                                        ->where('id_cliente', $c->id_cliente)
+                                        ->where('tipo', 'profesionista_a_cliente')
+                                        ->first();
+                                }
+
+                                $tieneCalifs = $esCompletado && ($califRecibida || $califDada);
+                            @endphp
+
+                            {{-- Fila principal --}}
+                            <tr class="data-row">
                                 <td class="text-muted">{{ $c->id_contratacion }}</td>
                                 <td style="font-weight:600">{{ $c->servicio->nombre_servicio }}</td>
                                 <td>
@@ -164,9 +202,11 @@
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                             Detalle
                                         </a>
+
                                         @if($c->estado == 'pago_pendiente' || $c->estado == 'activo')
                                             <a href="{{ route('trabajador.chat', $c->id_contratacion) }}" class="btn-action btn-chat">Chat</a>
                                         @endif
+
                                         @if($c->estado == 'activo')
                                             <form action="{{ route('trabajador.completarServicio', $c->id_contratacion) }}" method="POST">
                                                 @csrf
@@ -176,9 +216,78 @@
                                                 </button>
                                             </form>
                                         @endif
+
+                                        @if($tieneCalifs)
+                                            <button class="btn-action btn-toggle" onclick="toggleCalif({{ $c->id_contratacion }}, this)">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                                Ver calificaciones
+                                            </button>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
+
+                            {{-- Fila expandible de calificaciones --}}
+                            @if($tieneCalifs)
+                                <tr class="expand-row calif-row" id="calif-{{ $c->id_contratacion }}">
+                                    <td colspan="7" style="padding:0">
+                                        <div class="calif-panel">
+
+                                            {{-- Calificación recibida del cliente --}}
+                                            @if($califRecibida)
+                                                <div class="calif-block">
+                                                    <div class="calif-block-title">Calificación que recibiste del cliente</div>
+                                                    <div style="display:flex;align-items:baseline;gap:.4rem;margin-bottom:.4rem">
+                                                        <span class="calif-num">{{ $califRecibida->calificacion }}</span>
+                                                        <span class="calif-label">/ 5</span>
+                                                        <span class="stars-row">
+                                                            @for($i = 1; $i <= 5; $i++)
+                                                                {{ $i <= $califRecibida->calificacion ? '★' : '☆' }}
+                                                            @endfor
+                                                        </span>
+                                                    </div>
+                                                    @if($califRecibida->comentario)
+                                                        <div class="calif-comment">"{{ $califRecibida->comentario }}"</div>
+                                                    @else
+                                                        <div class="no-comment">Sin comentario</div>
+                                                    @endif
+                                                </div>
+                                            @else
+                                                <div class="calif-block">
+                                                    <div class="calif-block-title">Calificación del cliente</div>
+                                                    <div class="calif-pending">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                                        El cliente aún no te ha calificado
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            {{-- Calificación dada al cliente --}}
+                                            @if($califDada)
+                                                <div class="calif-block">
+                                                    <div class="calif-block-title">Tu calificación al cliente</div>
+                                                    <div style="display:flex;align-items:baseline;gap:.4rem;margin-bottom:.4rem">
+                                                        <span class="calif-num">{{ $califDada->calificacion }}</span>
+                                                        <span class="calif-label">/ 5</span>
+                                                        <span class="stars-row">
+                                                            @for($i = 1; $i <= 5; $i++)
+                                                                {{ $i <= $califDada->calificacion ? '★' : '☆' }}
+                                                            @endfor
+                                                        </span>
+                                                    </div>
+                                                    @if($califDada->comentario)
+                                                        <div class="calif-comment">"{{ $califDada->comentario }}"</div>
+                                                    @else
+                                                        <div class="no-comment">Sin comentario</div>
+                                                    @endif
+                                                </div>
+                                            @endif
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endif
+
                         @endforeach
                     </tbody>
                 </table>
@@ -191,4 +300,14 @@
         @endif
     </main>
 </div>
+
+<script>
+    function toggleCalif(id, btn) {
+        const row = document.getElementById('calif-' + id);
+        const visible = row.classList.toggle('visible');
+        btn.innerHTML = visible
+            ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg> Ocultar'
+            : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Ver calificaciones';
+    }
+</script>
 @endsection

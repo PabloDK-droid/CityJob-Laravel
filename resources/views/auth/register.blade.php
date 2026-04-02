@@ -386,6 +386,92 @@
             .form-row { grid-template-columns: 1fr; }
             .register-card { padding: 1.75rem 1.25rem; }
         }
+
+        /* checkbox aviso */
+        .terms-check {
+            display:flex; align-items:flex-start; gap:.65rem;
+            margin-top:1.5rem; margin-bottom:.25rem;
+            padding:.85rem 1rem;
+            background:rgba(255,255,255,.03);
+            border:1px solid var(--border);
+            border-radius:.75rem;
+        }
+        .terms-check input[type="checkbox"] {
+            width:17px; height:17px; flex-shrink:0; margin-top:2px;
+            accent-color:var(--cyan); cursor:pointer;
+        }
+        .terms-check label {
+            font-size:.84rem; color:var(--text-muted);
+            font-weight:400; letter-spacing:0; cursor:pointer; line-height:1.55;
+        }
+        .terms-check label a {
+            color:var(--cyan); font-weight:600;
+            text-decoration:none; transition:opacity .2s;
+        }
+        .terms-check label a:hover { opacity:.75; }
+        .doc-overlay {
+            display:none; position:fixed; inset:0;
+            background:rgba(0,10,25,.8); backdrop-filter:blur(6px);
+            z-index:2000; align-items:center; justify-content:center; padding:1.5rem;
+        }
+        .doc-overlay.open { display:flex; }
+        .doc-box {
+            background:#001e3c; border:1px solid var(--border);
+            border-radius:1.25rem; width:100%; max-width:640px;
+            max-height:82vh; display:flex; flex-direction:column;
+        }
+        .doc-header {
+            display:flex; align-items:center; justify-content:space-between;
+            padding:1.25rem 1.5rem; border-bottom:1px solid var(--border); flex-shrink:0;
+        }
+        .doc-header h2 { font-family:'Syne',sans-serif; font-size:1rem; font-weight:800; color:var(--white); margin:0; }
+        .doc-close {
+            width:30px; height:30px; border-radius:.45rem;
+            background:rgba(255,255,255,.06); border:1px solid var(--border);
+            color:var(--text-muted); cursor:pointer; transition:all .2s;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .doc-close:hover { background:rgba(220,53,69,.1); color:#ff6b7a; }
+        .doc-body { overflow-y:auto; padding:1.5rem; font-size:.88rem; color:var(--text-muted); line-height:1.75; }
+        .doc-body h3 { color:var(--white); font-family:'Syne',sans-serif; font-size:.9rem; margin:1.25rem 0 .4rem; }
+        .doc-body h3:first-child { margin-top:0; }
+        .doc-body p { margin-bottom:.75rem; }
+        .doc-body ul { padding-left:1.25rem; margin-bottom:.75rem; }
+        .doc-body ul li { margin-bottom:.35rem; }
+        .doc-footer { padding:1rem 1.5rem; border-top:1px solid var(--border); display:flex; justify-content:flex-end; flex-shrink:0; }
+        .doc-btn { background:var(--cyan); color:var(--navy); padding:.6rem 1.5rem; border-radius:.6rem; font-family:'Syne',sans-serif; font-weight:700; font-size:.88rem; border:none; cursor:pointer; }
+        .doc-btn:hover { background:var(--cyan-dim); }
+        /* geo domicilio en registro */
+        .geo-wrap-reg { position:relative; }
+        .geo-wrap-reg input { padding-right:2.5rem; }
+        .btn-gps-reg {
+            position:absolute; right:.55rem; top:50%; transform:translateY(-50%);
+            background:none; border:none; cursor:pointer; padding:.25rem;
+            color:var(--text-muted); transition:color .2s; display:flex; align-items:center;
+        }
+        .btn-gps-reg:hover { color:var(--cyan); }
+        .btn-gps-reg.loading svg { animation:spin-reg .8s linear infinite; color:var(--cyan); }
+        @keyframes spin-reg { to { transform:rotate(360deg); } }
+        .geo-suggestions-reg {
+            position:absolute; top:calc(100% + 4px); left:0; right:0; z-index:999;
+            background:#002647; border:1px solid var(--border);
+            border-radius:.65rem; overflow:hidden;
+            box-shadow:0 8px 24px rgba(0,0,0,.35);
+            display:none;
+        }
+        .geo-suggestions-reg.open { display:block; }
+        .geo-suggestion-reg {
+            display:flex; align-items:center; gap:.6rem;
+            padding:.65rem .9rem; cursor:pointer;
+            font-size:.83rem; color:var(--white);
+            transition:background .15s; border-bottom:1px solid rgba(0,195,255,.07);
+        }
+        .geo-suggestion-reg:last-child { border-bottom:none; }
+        .geo-suggestion-reg:hover { background:rgba(0,195,255,.08); color:var(--cyan); }
+        .geo-suggestion-reg svg { flex-shrink:0; color:var(--text-muted); }
+        .geo-msg-reg { font-size:.75rem; color:var(--text-muted); display:flex; align-items:center; gap:.35rem; min-height:16px; margin-top:.3rem; }
+        .geo-msg-reg.error { color:#ff6b7a; }
+        .geo-msg-reg.ok    { color:#00d68f; }
     </style>
 </head>
 <body>
@@ -508,7 +594,22 @@
                     </div>
                     <div class="form-group">
                         <label>Domicilio</label>
-                        <input type="text" name="domicilio" value="{{ old('domicilio') }}" required placeholder="Calle y número">
+                        <div class="geo-wrap-reg" id="geoWrapReg">
+                            <input
+                                type="text"
+                                name="domicilio"
+                                id="domicilioInput"
+                                value="{{ old('domicilio') }}"
+                                required
+                                placeholder="Escribe o usa tu ubicación actual..."
+                                autocomplete="off"
+                            >
+                            <button type="button" class="btn-gps-reg" id="btnGpsReg" title="Usar mi ubicación GPS" onclick="usarGPSReg()">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="9" stroke-dasharray="2 2"/></svg>
+                            </button>
+                            <div class="geo-suggestions-reg" id="suggReg"></div>
+                        </div>
+                        <div class="geo-msg-reg" id="geoMsgReg"></div>
                     </div>
                 </div>
 
@@ -557,7 +658,7 @@
                     <div class="form-group">
                         <label>Confirmar Contraseña</label>
                         <div class="pw-wrap">
-                            <input type="password" name="contrasena_confirmacion" id="pw2" required minlength="6" placeholder="Repite tu contraseña">
+                            <input type="password" name="contrasena_confirmation" id="pw2" required minlength="6" placeholder="Repite tu contraseña">
                             <button type="button" class="pw-toggle" onclick="togglePw('pw2', this)">
                                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
@@ -565,6 +666,18 @@
                             </button>
                         </div>
                     </div>
+                </div>
+
+                {{-- AVISO DE PRIVACIDAD Y T&C --}}
+                <div class="terms-check">
+                    <input type="checkbox" id="acepta_terminos" name="acepta_terminos" required>
+                    <label for="acepta_terminos">
+                        He leído y acepto los
+                        <a href="#" onclick="openDoc('modal-terminos'); return false;">Términos y Condiciones</a>
+                        y el
+                        <a href="#" onclick="openDoc('modal-privacidad'); return false;">Aviso de Privacidad</a>
+                        de CityJob.
+                    </label>
                 </div>
 
                 <button type="submit" class="btn-submit">Crear mi cuenta</button>
@@ -577,9 +690,111 @@
         </div>
     </main>
 
+    <!-- MODAL TÉRMINOS Y CONDICIONES -->
+    <div class="doc-overlay" id="modal-terminos" onclick="closeDocOnBackdrop(event, 'modal-terminos')">
+        <div class="doc-box">
+            <div class="doc-header">
+                <h2>Términos y Condiciones</h2>
+                <button class="doc-close" onclick="closeDoc('modal-terminos')">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="doc-body">
+                <h3>1. Aceptación de los Términos</h3>
+                <p>Al registrarte en CityJob, aceptas cumplir con los presentes Términos y Condiciones. Si no estás de acuerdo con alguno de ellos, no podrás hacer uso de la plataforma.</p>
+
+                <h3>2. Descripción del Servicio</h3>
+                <p>CityJob es una plataforma digital que conecta a clientes con profesionistas independientes para la contratación de servicios técnicos y del hogar. CityJob actúa como intermediario y no es empleador de ningún profesionista registrado.</p>
+
+                <h3>3. Registro y Cuenta de Usuario</h3>
+                <ul>
+                    <li>Debes proporcionar información veraz, completa y actualizada al registrarte.</li>
+                    <li>Eres responsable de mantener la confidencialidad de tu contraseña.</li>
+                    <li>CityJob se reserva el derecho de suspender o eliminar cuentas que incumplan estas condiciones.</li>
+                </ul>
+
+                <h3>4. Uso Aceptable</h3>
+                <p>Los usuarios se comprometen a usar la plataforma únicamente para los fines permitidos, sin cometer fraude, suplantación de identidad, ni actos que dañen a otros usuarios o a la plataforma.</p>
+
+                <h3>5. Pagos y Comisiones</h3>
+                <p>Los pagos se procesan mediante Stripe. CityJob aplica una comisión del 10% sobre el monto de cada servicio completado. Esta comisión cubre los costos de intermediación, soporte y mantenimiento de la plataforma.</p>
+
+                <h3>6. Calificaciones y Reseñas</h3>
+                <p>Al concluir un servicio, ambas partes pueden calificarse mutuamente. Las calificaciones deben ser honestas y no pueden ser manipuladas. CityJob puede eliminar reseñas que violen estas políticas.</p>
+
+                <h3>7. Limitación de Responsabilidad</h3>
+                <p>CityJob no se hace responsable por daños derivados de la ejecución de los servicios contratados entre usuarios. La plataforma facilita la conexión pero no garantiza la calidad del trabajo realizado.</p>
+
+                <h3>8. Modificaciones</h3>
+                <p>CityJob puede modificar estos Términos en cualquier momento. Los cambios serán notificados a los usuarios registrados. El uso continuado de la plataforma implica la aceptación de los términos vigentes.</p>
+
+                <h3>9. Legislación Aplicable</h3>
+                <p>Estos Términos se rigen por la legislación mexicana. Cualquier disputa será resuelta ante los tribunales competentes del Estado de México.</p>
+
+                <p style="margin-top:1rem;font-size:.8rem">Última actualización: Enero 2026</p>
+            </div>
+            <div class="doc-footer">
+                <button class="doc-btn" onclick="closeDoc('modal-terminos')">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL AVISO DE PRIVACIDAD -->
+    <div class="doc-overlay" id="modal-privacidad" onclick="closeDocOnBackdrop(event, 'modal-privacidad')">
+        <div class="doc-box">
+            <div class="doc-header">
+                <h2>Aviso de Privacidad</h2>
+                <button class="doc-close" onclick="closeDoc('modal-privacidad')">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="doc-body">
+                <h3>Responsable del Tratamiento de Datos</h3>
+                <p>CityJob, con sede en la Universidad Tecnológica de Tecámac, Carretera Federal México-Pachuca km 37.5, Tecámac, Estado de México, es responsable del tratamiento de tus datos personales conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP).</p>
+
+                <h3>Datos Personales Recabados</h3>
+                <p>Para el registro y uso de la plataforma, CityJob recaba los siguientes datos:</p>
+                <ul>
+                    <li>Nombre completo y género</li>
+                    <li>Correo electrónico y teléfono</li>
+                    <li>Domicilio y código postal</li>
+                    <li>Datos profesionales (para profesionistas): nivel de estudios y especialidad</li>
+                    <li>Información de pagos procesada por Stripe (no almacenada directamente por CityJob)</li>
+                </ul>
+
+                <h3>Finalidad del Tratamiento</h3>
+                <p>Tus datos personales son utilizados para:</p>
+                <ul>
+                    <li>Crear y gestionar tu cuenta en la plataforma</li>
+                    <li>Facilitar la contratación de servicios entre usuarios</li>
+                    <li>Procesar pagos y emitir comprobantes</li>
+                    <li>Enviar notificaciones relacionadas con tus contrataciones</li>
+                    <li>Mejorar la experiencia del usuario y los servicios ofrecidos</li>
+                </ul>
+
+                <h3>Transferencia de Datos</h3>
+                <p>CityJob no vende ni cede tus datos personales a terceros, salvo cuando sea requerido por ley o para el procesamiento de pagos a través de Stripe, bajo sus propias políticas de privacidad.</p>
+
+                <h3>Derechos ARCO</h3>
+                <p>Tienes derecho a Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos personales (derechos ARCO). Para ejercerlos, escríbenos a <strong style="color:var(--white)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="691a0619061b1d0c290a001d1003060b470a0604">[email&#160;protected]</a></strong>.</p>
+
+                <h3>Seguridad de los Datos</h3>
+                <p>CityJob implementa medidas de seguridad técnicas y administrativas para proteger tus datos contra acceso no autorizado, pérdida o alteración, incluyendo cifrado de contraseñas y comunicaciones HTTPS.</p>
+
+                <h3>Cambios al Aviso de Privacidad</h3>
+                <p>Cualquier modificación a este aviso será publicada en la plataforma y notificada a los usuarios registrados.</p>
+
+                <p style="margin-top:1rem;font-size:.8rem">Última actualización: Enero 2026</p>
+            </div>
+            <div class="doc-footer">
+                <button class="doc-btn" onclick="closeDoc('modal-privacidad')">Entendido</button>
+            </div>
+        </div>
+    </div>
+
     <footer>&copy; 2026 CityJob. Todos los derechos reservados.</footer>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         function handleRole(radio) {
             document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('selected'));
             radio.closest('.role-tab').classList.add('selected');
@@ -602,6 +817,124 @@
         function togglePw(id, btn) {
             const field = document.getElementById(id);
             field.type = field.type === 'password' ? 'text' : 'password';
+        }
+
+        function openDoc(id) {
+            document.getElementById(id).classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeDoc(id) {
+            document.getElementById(id).classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        function closeDocOnBackdrop(e, id) {
+            if (e.target === document.getElementById(id)) closeDoc(id)
+        }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                ['modal-terminos','modal-privacidad'].forEach(closeDoc);
+                document.getElementById('suggReg').classList.remove('open');
+            }
+        });
+
+        // NOMINATIM
+        const NOMINATIM_REG = 'https://nominatim.openstreetmap.org';
+        let debounceReg;
+
+        const domInput = document.getElementById('domicilioInput');
+        const suggReg  = document.getElementById('suggReg');
+
+        domInput.addEventListener('input', function () {
+            const val = this.value.trim();
+            clearTimeout(debounceReg);
+            suggReg.classList.remove('open');
+            suggReg.innerHTML = '';
+            if (val.length < 4) return;
+
+            debounceReg = setTimeout(() => {
+                fetch(`${NOMINATIM_REG}/search?format=json&q=${encodeURIComponent(val)}&countrycodes=mx&limit=5&addressdetails=1`, {
+                    headers: { 'Accept-Language': 'es' }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    suggReg.innerHTML = '';
+                    if (!data.length) return;
+                    data.forEach(place => {
+                        const item = document.createElement('div');
+                        item.className = 'geo-suggestion-reg';
+                        item.innerHTML = `
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            <span>${place.display_name}</span>`;
+                        item.addEventListener('click', () => {
+                            domInput.value = place.display_name;
+                            suggReg.classList.remove('open');
+                            suggReg.innerHTML = '';
+                            setMsgReg('ok', '✓ Ubicación seleccionada');
+                        });
+                        suggReg.appendChild(item);
+                    });
+                    suggReg.classList.add('open');
+                })
+                .catch(() => {});
+            }, 400);
+        });
+
+        document.addEventListener('click', e => {
+            if (!e.target.closest('#geoWrapReg')) {
+                suggReg.classList.remove('open');
+            }
+        });
+
+        function usarGPSReg() {
+            if (!navigator.geolocation) {
+                setMsgReg('error', 'Tu navegador no soporta la geolocalización.');
+                return;
+            }
+            const btn = document.getElementById('btnGpsReg');
+            btn.classList.add('loading');
+            setMsgReg('', 'Obteniendo tu ubicación...');
+
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    const { latitude: lat, longitude: lon } = pos.coords;
+                    fetch(`${NOMINATIM_REG}/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`, {
+                        headers: { 'Accept-Language': 'es' }
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        btn.classList.remove('loading');
+                        if (data && data.display_name) {
+                            domInput.value = data.display_name;
+                            setMsgReg('ok', '✓ Ubicación GPS detectada');
+                        } else {
+                            setMsgReg('error', 'No se pudo obtener la dirección.');
+                        }
+                    })
+                    .catch(() => {
+                        btn.classList.remove('loading');
+                        setMsgReg('error', 'Error al conectar con el servicio de mapas.');
+                    });
+                },
+                err => {
+                    btn.classList.remove('loading');
+                    const msgs = {
+                        1: 'Permiso de ubicación denegado.',
+                        2: 'No se pudo determinar la ubicación.',
+                        3: 'Tiempo de espera agotado.'
+                    };
+                    setMsgReg('error', msgs[err.code] || 'Error de geolocalización.');
+                },
+                { timeout: 10000, maximumAge: 60000 }
+            );
+        }
+
+        function setMsgReg(type, text) {
+            const el = document.getElementById('geoMsgReg');
+            el.className = 'geo-msg-reg' + (type ? ' ' + type : '');
+            el.textContent = text;
         }
     </script>
 </body>
