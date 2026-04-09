@@ -140,9 +140,17 @@ class ProfesionistaController extends Controller
         return view('trabajador.peticiones_pendientes', compact('peticiones'));
     }
 
-    public function aceptarTrabajo($id)
+    public function aceptarTrabajo(Request $request, $id)
     {
         $profesionista_id = session('user_id');
+
+        $request->validate([
+            'monto_propuesto' => 'required|numeric|min:1',
+        ], [
+            'monto_propuesto.required' => 'Debes ingresar el monto del servicio.',
+            'monto_propuesto.numeric'  => 'El monto debe ser un número válido.',
+            'monto_propuesto.min'      => 'El monto debe ser mayor a 0.',
+        ]);
 
         $contratacion = Contratacion::where('id_contratacion', $id)
             ->where('id_profesionista', $profesionista_id)
@@ -150,11 +158,12 @@ class ProfesionistaController extends Controller
             ->firstOrFail();
 
         $contratacion->estado_trabajador = 'aceptado';
-        $contratacion->estado = 'pago_pendiente';
+        $contratacion->estado            = 'pago_pendiente';
+        $contratacion->monto_acordado    = $request->monto_propuesto;
         $contratacion->save();
 
         return redirect()->route('trabajador.peticionesPendientes')
-            ->with('success', 'Trabajo aceptado. Se ha notificado al cliente para proceder con el pago.');
+            ->with('success', 'Trabajo aceptado. Se notificó al cliente con el monto propuesto.');
     }
 
     public function rechazarTrabajo($id)

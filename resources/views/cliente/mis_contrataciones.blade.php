@@ -213,7 +213,13 @@
                                     <div class="text-muted-sm">{{ $c->profesionista->telefono }}</div>
                                 </td>
                                 <td class="text-muted-sm">{{ $c->localizacion }}</td>
-                                <td class="monto">${{ number_format($c->monto_acordado, 2) }}</td>
+                                <td>
+                                    @if($c->monto_acordado > 0)
+                                        <span class="monto">${{ number_format($c->monto_acordado, 2) }}</span>
+                                    @else
+                                        <span style="color:var(--text-muted);font-size:.8rem;font-style:italic">Por definir</span>
+                                    @endif
+                                </td>
                                 <td class="text-muted-sm">{{ \Carbon\Carbon::parse($c->fecha_realizacion)->format('d/m/Y H:i') }}</td>
                                 <td>
                                     @if($c->estado == 'pago_pendiente')

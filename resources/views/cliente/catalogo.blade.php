@@ -136,7 +136,7 @@
         color:var(--cyan);
     }
     .servicio-nombre { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; color:var(--white); }
-    .servicio-precio { font-size:1.25rem; font-weight:800; color:var(--cyan); font-family:'Syne',sans-serif; }
+    .servicio-nego { font-size:.82rem; font-weight:700; color:var(--cyan); font-family:'Instrument Sans',sans-serif; display:inline-flex; align-items:center; gap:.35rem; padding:.3rem .7rem; background:rgba(0,195,255,.08); border:1px solid rgba(0,195,255,.2); border-radius:100px; }
     .servicio-stats { font-size:.78rem; color:var(--text-muted); }
     .btn-contratar {
         display:block; text-align:center;
@@ -230,14 +230,7 @@
                         <label>Buscar servicio</label>
                         <input type="text" name="buscar" value="{{ request('buscar') }}" placeholder="Ej: Plomería">
                     </div>
-                    <div class="filter-group">
-                        <label>Precio mínimo</label>
-                        <input type="number" name="precio_min" value="{{ request('precio_min') }}" placeholder="$0" step="50">
-                    </div>
-                    <div class="filter-group">
-                        <label>Precio máximo</label>
-                        <input type="number" name="precio_max" value="{{ request('precio_max') }}" placeholder="$10,000" step="50">
-                    </div>
+
                 </div>
                 <div class="filter-actions">
                     <button type="submit" class="btn-cyan">Buscar</button>
@@ -255,7 +248,10 @@
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                         </div>
                         <div class="servicio-nombre">{{ $servicio->nombre_servicio }}</div>
-                        <div class="servicio-precio">${{ number_format($servicio->precio_base, 2) }} <small style="font-size:.7rem;font-weight:600;color:var(--text-muted)">MXN</small></div>
+                        <div class="servicio-nego">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            Precio a convenir
+                        </div>
                         <div class="servicio-stats">{{ $servicio->contrataciones_count }} contrataciones</div>
                         <a href="{{ route('cliente.profesionistas', $servicio->id_servicio) }}" class="btn-contratar">
                             Ver Profesionistas
