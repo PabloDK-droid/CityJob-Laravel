@@ -33,16 +33,7 @@ class ClienteController extends Controller
                   ->orWhereRaw("unaccent(LOWER(nombre_servicio)) LIKE unaccent(LOWER(?))", ['%' . $busqueda . '%']);
             });
         }
-    
-        //Precio mínimo
-        if ($request->filled('precio_min')) {
-            $query->where('precio_base', '>=', $request->precio_min);
-        }
-    
-        //Precio máximo
-        if ($request->filled('precio_max')) {
-            $query->where('precio_base', '<=', $request->precio_max);
-        }
+
     
         $servicios = $query->get();
         return view('cliente.catalogo', compact('servicios'));
@@ -69,24 +60,21 @@ public function contratar(Request $request)
 {
     $cliente_id = session('user_id');
     $cliente = Cliente::findOrFail($cliente_id);
-    
-    // Obtener el servicio para calcular el monto
-    $servicio = Servicio::findOrFail($request->id_servicio);
-    
+
         $contratacion = Contratacion::create([
-            'id_cliente' => $cliente_id,
+            'id_cliente'       => $cliente_id,
             'id_profesionista' => $request->id_profesionista,
-            'id_servicio' => $request->id_servicio,
-            'nombres_emitor' => $cliente->nombres . ' ' . $cliente->apellido_p,
-            'estado_emitor' => true,
-            'localizacion' => $request->localizacion,
-            'fecha_realizacion' => now(),
-            'monto_acordado' => $servicio->precio_base,
-            'estado_trabajador' => 'pendiente' // AGREGADO - inicia como pendiente
+            'id_servicio'      => $request->id_servicio,
+            'nombres_emitor'   => $cliente->nombres . ' ' . $cliente->apellido_p,
+            'estado_emitor'    => true,
+            'localizacion'     => $request->localizacion,
+            'fecha_realizacion'=> now(),
+            'monto_acordado'   => 0,
+            'estado_trabajador'=> 'pendiente',
         ]);
 
         return redirect()->route('cliente.misContrataciones')
-            ->with('success', 'Solicitud enviada. El profesionista debe aceptar el trabajo.');
+            ->with('success', 'Solicitud enviada. El profesionista revisará tu petición y propondrá el precio.');
     }
 
     // Ver mis contrataciones

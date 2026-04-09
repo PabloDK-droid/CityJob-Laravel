@@ -178,12 +178,32 @@
                             </div>
                         </div>
 
+                        {{-- Campo de monto propuesto --}}
+                        <div style="padding:.75rem 0 .25rem;border-top:1px solid var(--border)">
+                            <label style="font-size:.78rem;font-weight:600;color:#a8c5e0;display:block;margin-bottom:.4rem">Proponer precio del servicio (MXN)</label>
+                            <div style="display:flex;align-items:center;gap:.5rem">
+                                <span style="color:var(--text-muted);font-size:.9rem">$</span>
+                                <input
+                                    type="number"
+                                    form="form-aceptar-{{ $p->id_contratacion }}"
+                                    name="monto_propuesto"
+                                    min="1"
+                                    step="0.01"
+                                    placeholder="Ej: 500.00"
+                                    required
+                                    style="flex:1;padding:.55rem .8rem;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:.55rem;color:var(--white);font-family:'Instrument Sans',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s"
+                                    onfocus="this.style.borderColor='var(--cyan)'"
+                                    onblur="this.style.borderColor='rgba(0,195,255,0.15)'"
+                                >
+                            </div>
+                        </div>
+
                         <div class="peticion-actions">
-                            <form action="{{ route('trabajador.aceptarTrabajo', $p->id_contratacion) }}" method="POST" style="flex:1">
+                            <form id="form-aceptar-{{ $p->id_contratacion }}" action="{{ route('trabajador.aceptarTrabajo', $p->id_contratacion) }}" method="POST" style="flex:1">
                                 @csrf
                                 <button type="submit" class="btn-aceptar" style="width:100%">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                    Aceptar
+                                    Aceptar con precio
                                 </button>
                             </form>
                             <form action="{{ route('trabajador.rechazarTrabajo', $p->id_contratacion) }}" method="POST" style="flex:1">
